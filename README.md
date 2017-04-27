@@ -25,4 +25,9 @@ This is an grab-bag of things that may make up a specification if worked on. Thi
 * The next card to present is selected from all cards in all active decks. The algorithm for how exactly to select the next card may take into account the times and status-values of previous presentations of the same card. There may be multiple algorithms to choose from.
 * The learning-status of a single card, a whole deck or all active decks can be reset.
 * On the main page presenting the cards there is a small statistics box displaying a summary of progress. There is a bar-graph representing all unique cards in all active decks with three sections: Not yet presented and marked as known or unknown on the last pass respectively.
-* 
+
+## Technicalities
+
+The project is being used to learn new technologies as a side-effect of producing a practical tool.
+
+* The app is built as a hybrid webapp using Ionic2 
