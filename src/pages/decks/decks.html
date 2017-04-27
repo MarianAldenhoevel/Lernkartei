@@ -7,5 +7,16 @@
 </ion-header>
 
 <ion-content padding>
-  <h2>Import, add, activate, deactivate and remove decks</h2>
+  <ion-list>
+    <ion-item>
+      <ion-icon name="add" item-left></ion-icon><h2>Import new Deck</h2>
+    </ion-item>
+    <ion-item *ngFor="let deck of decks" detail-push>
+      <ion-checkbox item-left [checked]="deck.active" (click)="toggleActive($event,deck)"></ion-checkbox>
+      <ion-label>
+        <h2>{{deck.name}}</h2>
+        <p>{{deck.count}} Cards</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
