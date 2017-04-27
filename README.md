@@ -25,6 +25,7 @@ This is a grab-bag of things that may make up a specification if worked on. This
 * The next card to present is selected from all cards in all active decks. The algorithm for how exactly to select the next card may take into account the times and status-values of previous presentations of the same card. There may be multiple algorithms to choose from.
 * The learning-status of a single card, a whole deck or all active decks can be reset.
 * On the main page presenting the cards there is a small statistics box displaying a summary of progress. There is a bar-graph representing all unique cards in all active decks with three sections: Not yet presented and marked as known or unknown on the last pass respectively.
+* To support the ease of transport between different system for import of decks while also keeping some internal state like activation of decks and the learning-progress the data will likely be stored as a mix of flat files and relational content in a DB. This requires good keys.
 
 ## Technicalities
 
