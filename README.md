@@ -10,7 +10,7 @@ So for any self-respecting software person this is a prompt to roll their own. L
 
 ## Collection Of Ideas
 
-This is an grab-bag of things that may make up a specification if worked on. This is a fun-project so there propably won't be such a thing but the list is here to reference if something becomes muddled.
+This is a grab-bag of things that may make up a specification if worked on. This is a fun-project so there propably won't be such a thing but the list is here to reference if something becomes muddled.
 
 * The unit of learning is a card. A card has a front and a back side. Generally the front will hold a question and the back the answer. In the case of vocabulary the front is in one language and the back is in another. 
 * Any card is uniquely defined by the contents of the front and back side with order preserved, two cards with identical content are considered the same card. Note: For vocabulary-cards it makes sense to swap the front and back and learn them in the other direction, the system may support automatic creation of such cards, but they are separate cards.
