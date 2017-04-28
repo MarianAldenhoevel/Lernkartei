@@ -3,6 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { LernkarteiApp } from './app.component';
 
+import { Http } from '@angular/http';
+import { TranslateModule, TranslateStaticLoader, TranslateLoader } from 'ng2-translate/ng2-translate';
+
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Device } from '@ionic-native/device';
@@ -31,7 +34,12 @@ import { DataProvider } from '../providers/data';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(LernkarteiApp)
+    IonicModule.forRoot(LernkarteiApp),
+    TranslateModule.forRoot({
+      provide: TranslateLoader,
+      useFactory: (createTranslateLoader),
+      deps: [Http]
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -55,3 +63,7 @@ import { DataProvider } from '../providers/data';
 })
 
 export class AppModule {}
+
+export function createTranslateLoader(http: Http) {
+  return new TranslateStaticLoader(http, 'assets/i18n', '.json');
+}

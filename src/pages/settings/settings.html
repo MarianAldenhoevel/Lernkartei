@@ -1,13 +1,13 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Settings
+      {{ "SETTINGS" | translate }}
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <ion-list>
-    <button ion-item (click)="aboutClick($event)">About</button>
+    <button ion-item (click)="aboutClick($event)">{{ "ABOUT" | translate }}</button>
   </ion-list>
 </ion-content>

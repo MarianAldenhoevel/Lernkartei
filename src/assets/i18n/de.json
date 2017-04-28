@@ -1,0 +1,13 @@
+{
+    "HELLO": "Hallo",
+    "ABOUT": "Über",
+    "BUILD_INFO": "Build-Information",
+    "DEVICE_INFO": "Geräte-Information",
+    "NA": "fehlt",
+    "DECKS": "Stapel",
+    "IMPORT_NEW_DECK": "Neuen Stapel importieren",
+    "CARDS": "Karten",
+    "SETTINGS": "Einstellungen",
+    "STATS": "Statistik",
+    "TRAIN": "Üben"
+}

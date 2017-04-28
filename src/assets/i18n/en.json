@@ -1,0 +1,13 @@
+{
+    "HELLO": "Hello",
+    "ABOUT": "About",
+    "BUILD_INFO": "Build Information",
+    "DEVICE_INFO": "Device Information",
+    "NA": "N/A",
+    "DECKS": "Decks",
+    "IMPORT_NEW_DECK": "Import New Deck",
+    "CARDS": "Cards",
+    "SETTINGS": "Settings",
+    "STATS": "Stats",
+    "TRAIN": "Train"
+}

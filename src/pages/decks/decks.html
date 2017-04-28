@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Decks
+      {{ "DECKS" | translate }}
     </ion-title>
   </ion-navbar>
 </ion-header>
@@ -10,13 +10,13 @@
   <ion-searchbar (ionInput)="filterDecks($event)"></ion-searchbar>
   <ion-list>
     <ion-item (click)="importDeck($event)"> 
-      <ion-icon name="add" item-left></ion-icon><h2>Import new Deck</h2>
+      <ion-icon name="add" item-left></ion-icon><h2>{{ "IMPORT_NEW_DECK" | translate }}</h2>
     </ion-item>
     <ion-item *ngFor="let deck of decks">
       <ion-checkbox item-left [checked]="deck.active" (click)="toggleDeck($event,deck)"></ion-checkbox>
       <ion-label>
         <h2>{{deck.name}}</h2>
-        <p>{{deck.count}} Cards</p>
+        <p>{{deck.count}} {{ "CARDS" | translate }}</p>
       </ion-label>
     </ion-item>
   </ion-list>
