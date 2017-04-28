@@ -1,8 +1,12 @@
 page-decks {
     ion-checkbox{
+        /*
+        // Without this special rule the checkboxes active area covers the
+        // while ion-item and such masks other controls on the same item. 
         button.item-cover{
             left: 0;
             width: 20%;
         }
+        */
     }
 }

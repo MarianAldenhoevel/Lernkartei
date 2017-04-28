@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
+import { ImportDeckPage } from '../import-deck/import-deck';
+
 import { Deck } from '../../types/deck';
-import { DecksProvider } from '../../providers/decks';
+import { DataProvider } from '../../providers/data';
 
 @Component({
   selector: 'page-decks',
@@ -10,15 +12,27 @@ import { DecksProvider } from '../../providers/decks';
 })
 
 export class DecksPage {
-  decks: Array<Deck>
+  decks: Array<Deck>;
 
-  constructor(public navCtrl: NavController, public decksProvider: DecksProvider) {
-    decksProvider.load().then((decks) => this.decks = decks);
+  constructor(public navCtrl: NavController, public dataProvider: DataProvider) {
+    this.getDecks(null);
   }
 
-  toggleActive(event, deck: Deck) {
-    console.log(deck);
-    deck.active = !deck.active;
+  getDecks(filterStr) {
+    this.dataProvider.loadDecks(filterStr).then((decks) => this.decks = decks);
+  }
+
+  filterDecks(searchbar) {
+    let filterStr: string = searchbar.srcElement.value;
+    this.getDecks(filterStr);
+  }
+
+  toggleDeck(event, deck: Deck) {
+    this.dataProvider.toggleDeck(deck);
+  }
+
+  importDeck(event) {
+     this.navCtrl.push(ImportDeckPage);
   }
 
 }

@@ -7,12 +7,13 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-searchbar (ionInput)="filterDecks($event)"></ion-searchbar>
   <ion-list>
-    <ion-item>
+    <ion-item (click)="importDeck($event)"> 
       <ion-icon name="add" item-left></ion-icon><h2>Import new Deck</h2>
     </ion-item>
-    <ion-item *ngFor="let deck of decks" detail-push>
-      <ion-checkbox item-left [checked]="deck.active" (click)="toggleActive($event,deck)"></ion-checkbox>
+    <ion-item *ngFor="let deck of decks">
+      <ion-checkbox item-left [checked]="deck.active" (click)="toggleDeck($event,deck)"></ion-checkbox>
       <ion-label>
         <h2>{{deck.name}}</h2>
         <p>{{deck.count}} Cards</p>

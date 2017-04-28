@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      About
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <h2>Build Information</h2>
+      <div *ngIf="dataProvider.appVersion.appName">
+        <p>PackageName: {{dataProvider.appVersion.appName}}</p>
+        <p>PackageName: {{dataProvider.appVersion.packageName}}</p>
+        <p>VersionCode: {{dataProvider.appVersion.versionCode}}</p>
+        <p>VersionNumber: {{dataProvider.appVersion.versionNumber}}</p>
+      </div>
+      <div *ngIf="!dataProvider.appVersion.appName">
+        <p>N/A</p>
+      </div>
+    </ion-item><ion-item>
+      <h2>Device Information</h2>
+      <div *ngIf="dataProvider.device.cordova">
+        <p>cordova: {{dataProvider.device.cordova}}</p>
+        <p>model: {{dataProvider.device.model}}</p>
+        <p>platform: {{dataProvider.device.platform}}</p>
+        <p>uuid: {{dataProvider.device.uuid}}</p>
+        <p>version: {{dataProvider.device.version}}</p>
+        <p>manufacturer: {{dataProvider.device.manufacturer}}</p>
+        <p>isVirtual: {{dataProvider.device.isVirtual}}</p>
+        <p>serial: {{dataProvider.device.serial}}</p>
+      </div>
+      <div *ngIf="!dataProvider.device.cordova">
+        <p>N/A</p>
+      </div>
+    </ion-item>
+  </ion-list>
+</ion-content>
