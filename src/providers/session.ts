@@ -4,7 +4,7 @@ import 'rxjs/add/operator/map';
 import { Device } from '@ionic-native/device';
 import { AppVersion } from '@ionic-native/app-version';
 
-import { Deck } from '../types/deck';
+import { Deck, Card } from '../types/types';
 import { DBProvider } from './db';
 
 @Injectable()
