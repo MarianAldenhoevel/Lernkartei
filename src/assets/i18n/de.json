@@ -9,5 +9,8 @@
     "CARDS": "Karten",
     "SETTINGS": "Einstellungen",
     "STATS": "Statistik",
-    "TRAIN": "Üben"
+    "TRAIN": "Üben",
+    "FLIP": "Umdrehen",
+    "KNOW": "Ja",
+    "DONTKNOW": "Nein"
 }

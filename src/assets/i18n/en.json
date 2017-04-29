@@ -9,5 +9,8 @@
     "CARDS": "Cards",
     "SETTINGS": "Settings",
     "STATS": "Stats",
-    "TRAIN": "Train"
+    "TRAIN": "Train",
+    "FLIP": "Flip",
+    "KNOW": "Yes",
+    "DONTKNOW": "No"
 }

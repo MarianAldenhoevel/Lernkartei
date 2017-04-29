@@ -1,3 +1,25 @@
 page-home {
+    div.statspanel {
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        text-align: center;
+    }
 
+    div.know {
+        float: left;
+        background: #30d05f;
+        width: percentage(7/37);
+    }
+
+    div.dontknow {
+        float: left;
+        background: #f53d3d;
+        width: percentage(10/37);
+    }
+
+    div.neutral {
+        float: none;
+        background: gray;
+        overflow: auto;
+    }
 }

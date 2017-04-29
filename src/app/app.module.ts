@@ -19,7 +19,8 @@ import { SettingsPage } from '../pages/settings/settings';
 import { AboutPage } from '../pages/about/about';
 import { ImportDeckPage } from '../pages/import-deck/import-deck';
 
-import { DataProvider } from '../providers/data';
+import { SessionProvider } from '../providers/session';
+import { DBProvider } from '../providers/db';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import { DataProvider } from '../providers/data';
     IonicModule.forRoot(LernkarteiApp),
     TranslateModule.forRoot({
       provide: TranslateLoader,
-      useFactory: (createTranslateLoader),
+      useFactory: (function(http: Http) { return new TranslateStaticLoader(http, 'assets/i18n', '.json')}),
       deps: [Http]
     })
   ],
@@ -57,13 +58,10 @@ import { DataProvider } from '../providers/data';
     SplashScreen,
     Device,
     AppVersion,
-    DataProvider,
+    SessionProvider,
+    DBProvider,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
 
 export class AppModule {}
-
-export function createTranslateLoader(http: Http) {
-  return new TranslateStaticLoader(http, 'assets/i18n', '.json');
-}

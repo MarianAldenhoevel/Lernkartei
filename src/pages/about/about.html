@@ -8,30 +8,41 @@
 
 <ion-content padding>
   <ion-list>
+    <ion-item text-wrap>
+      <h2>{{ "LICENSE" | translate }}</h2>
+      <p>Copyright (c) 2017 Marian Aldenhövel</p>
+      <p>&nbsp;</p>
+      <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+      <p>&nbsp;</p>
+      <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+      <p>&nbsp;</p>
+      <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+    </ion-item>
     <ion-item>
       <h2>{{ "BUILD_INFO" | translate }}</h2>
-      <div *ngIf="dataProvider.appVersion.appName">
-        <p>PackageName: {{dataProvider.appVersion.appName}}</p>
-        <p>PackageName: {{dataProvider.appVersion.packageName}}</p>
-        <p>VersionCode: {{dataProvider.appVersion.versionCode}}</p>
-        <p>VersionNumber: {{dataProvider.appVersion.versionNumber}}</p>
+      <div *ngIf="session.appVersion.appName">
+        <p>PackageName: {{session.appVersion.appName}}</p>
+        <p>PackageName: {{session.appVersion.packageName}}</p>
+        <p>VersionCode: {{session.appVersion.versionCode}}</p>
+        <p>VersionNumber: {{session.appVersion.versionNumber}}</p>
       </div>
-      <div *ngIf="!dataProvider.appVersion.appName">
+      <div *ngIf="!session.appVersion.appName">
         <p>{{ "NA" | translate }}</p>
       </div>
-    </ion-item><ion-item>
+    </ion-item>
+    <ion-item>
       <h2>{{ "DEVICE_INFO" | translate }}</h2>
-      <div *ngIf="dataProvider.device.cordova">
-        <p>cordova: {{dataProvider.device.cordova}}</p>
-        <p>model: {{dataProvider.device.model}}</p>
-        <p>platform: {{dataProvider.device.platform}}</p>
-        <p>uuid: {{dataProvider.device.uuid}}</p>
-        <p>version: {{dataProvider.device.version}}</p>
-        <p>manufacturer: {{dataProvider.device.manufacturer}}</p>
-        <p>isVirtual: {{dataProvider.device.isVirtual}}</p>
-        <p>serial: {{dataProvider.device.serial}}</p>
+      <div *ngIf="session.device.cordova">
+        <p>cordova: {{session.device.cordova}}</p>
+        <p>model: {{session.device.model}}</p>
+        <p>platform: {{session.device.platform}}</p>
+        <p>uuid: {{session.device.uuid}}</p>
+        <p>version: {{session.device.version}}</p>
+        <p>manufacturer: {{session.device.manufacturer}}</p>
+        <p>isVirtual: {{session.device.isVirtual}}</p>
+        <p>serial: {{session.device.serial}}</p>
       </div>
-      <div *ngIf="!dataProvider.device.cordova">
+      <div *ngIf="!session.device.cordova">
         <p>{{ "NA" | translate }}</p>
       </div>
     </ion-item>

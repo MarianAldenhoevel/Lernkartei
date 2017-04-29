@@ -21,6 +21,8 @@ export class LernkarteiApp {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       
+console.log(JSON.stringify(navigator, null, 4));
+
       translate.setDefaultLang('en');
     
       console.log("navigator.language=\"" + navigator.language + "\"");

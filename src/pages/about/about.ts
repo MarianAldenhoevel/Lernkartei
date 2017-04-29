@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
-import { DataProvider } from '../../providers/data';
+import { SessionProvider } from '../../providers/session';
 
 @Component({
   selector: 'page-about',
@@ -10,7 +10,7 @@ import { DataProvider } from '../../providers/data';
 
 export class AboutPage {
   
-  constructor(public navCtrl: NavController, public dataProvider: DataProvider) {
+  constructor(public navCtrl: NavController, public session: SessionProvider) {
   }
 
 }

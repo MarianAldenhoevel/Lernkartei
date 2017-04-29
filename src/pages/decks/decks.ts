@@ -4,35 +4,44 @@ import { NavController } from 'ionic-angular';
 import { ImportDeckPage } from '../import-deck/import-deck';
 
 import { Deck } from '../../types/deck';
-import { DataProvider } from '../../providers/data';
+import { SessionProvider } from '../../providers/session';
 
 @Component({
-  selector: 'page-decks',
-  templateUrl: 'decks.html'
+    selector: 'page-decks',
+    templateUrl: 'decks.html'
 })
 
 export class DecksPage {
-  decks: Array<Deck>;
+    decks: Array<Deck>;
 
-  constructor(public navCtrl: NavController, public dataProvider: DataProvider) {
-    this.getDecks(null);
-  }
+    constructor(public navCtrl: NavController, public session: SessionProvider) {
+        this.getDecks();
+    }
 
-  getDecks(filterStr) {
-    this.dataProvider.loadDecks(filterStr).then((decks) => this.decks = decks);
-  }
+    getDecks() {
+        console.log("DecksPage.getDecks()");
 
-  filterDecks(searchbar) {
-    let filterStr: string = searchbar.srcElement.value;
-    this.getDecks(filterStr);
-  }
+        this.session.getFilteredDecks().then((decks) => { this.decks = decks; });
+    }
 
-  toggleDeck(event, deck: Deck) {
-    this.dataProvider.toggleDeck(deck);
-  }
+    filterDecks(searchbar) {
+        let deckFilter: string = searchbar.srcElement.value;
+        console.log("DecksPage.filterDecks(\"" + deckFilter + "\")");
 
-  importDeck(event) {
-     this.navCtrl.push(ImportDeckPage);
-  }
+        this.session.setDeckFilter(deckFilter);
+        this.getDecks();
+    }
+
+    toggleDeck(event, deck: Deck) {
+        console.log("DecksPage.toggleDeck(\"" + deck.name + "\")");
+        
+        this.session.toggleDeck(deck);
+    }
+
+    importDeck(event) {
+        console.log("DecksPage.importDeck()");
+
+        this.navCtrl.push(ImportDeckPage);
+    }
 
 }
