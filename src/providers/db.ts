@@ -281,4 +281,15 @@ export class DBProvider {
         
         return Promise.resolve(this.allCards);
     }
+
+    private currentCardIndex: number = 0;
+    
+    getNextCard(): Promise<Card> {
+        console.log("DBProvider.getNextCard()");
+        
+        this.currentCardIndex = (this.currentCardIndex+1) % this.allCards.length;
+
+        return Promise.resolve(this.allCards[this.currentCardIndex]);
+    }
+
 } // of class

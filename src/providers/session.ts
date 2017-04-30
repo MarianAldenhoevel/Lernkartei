@@ -28,9 +28,9 @@ export class SessionProvider {
         this.filteredDecks = null;
 
         // Fulfill the promises on AppVersion by assigning to local properties
-        _appVersion.getAppName().then((s) =>       { this.appVersion.appName = s       }).catch((err) => { });
-        _appVersion.getPackageName().then((s) =>   { this.appVersion.packageName = s   }).catch((err) => { });
-        _appVersion.getVersionCode().then((s) =>   { this.appVersion.versionCode = s   }).catch((err) => { });
+        _appVersion.getAppName().then((s) => { this.appVersion.appName = s }).catch((err) => { });
+        _appVersion.getPackageName().then((s) => { this.appVersion.packageName = s }).catch((err) => { });
+        _appVersion.getVersionCode().then((s) => { this.appVersion.versionCode = s }).catch((err) => { });
         _appVersion.getVersionNumber().then((s) => { this.appVersion.versionNumber = s }).catch((err) => { });
     }
 
@@ -57,9 +57,9 @@ export class SessionProvider {
         } else {
             // Instruct DB to load the complete set, store locally and resolve to it.
             return new Promise(resolve => {
-                this.db.getAllDecks().then((decks) => { 
-                    this.allDecks = decks; 
-                    resolve(this.allDecks) 
+                this.db.getAllDecks().then((decks) => {
+                    this.allDecks = decks;
+                    resolve(this.allDecks)
                 });
             })
         };
@@ -74,15 +74,15 @@ export class SessionProvider {
         } else {
             // Create new filtered set and resolve to it.
             return new Promise(resolve => {
-                this.getAllDecks().then((alldecks) => {     
+                this.getAllDecks().then((alldecks) => {
                     if (!this.deckFilter) {
                         // No filtering requested.
                         this.filteredDecks = alldecks;
                     } else {
                         // Apply filter to complete set, and store result 
-                        this.filteredDecks = alldecks.filter((deck: Deck) => { return deck.name.toUpperCase().indexOf(this.deckFilter.toUpperCase()) != -1 }); 
+                        this.filteredDecks = alldecks.filter((deck: Deck) => { return deck.name.toUpperCase().indexOf(this.deckFilter.toUpperCase()) != -1 });
                     }
-                
+
                     resolve(this.filteredDecks);
                 })
             })
@@ -93,6 +93,19 @@ export class SessionProvider {
         console.log("SessionProvider.toggleDeck(\"" + deck.name + "\")");
 
         deck.active = !deck.active;
+    }
+
+    getNextCard(): Promise<Card> {
+        console.log("SessionProvider.getNextCard()");
+        return this.db.getNextCard();
+    }
+
+    know(card: Card) {
+        console.log("SessionProvider.know()");
+    }
+
+    dontKnow(card: Card) {
+        console.log("SessionProvider.dontKnow()");
     }
 
 } // of class

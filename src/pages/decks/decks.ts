@@ -3,7 +3,7 @@ import { NavController } from 'ionic-angular';
 
 import { ImportDeckPage } from '../import-deck/import-deck';
 
-import { Deck } from '../../types/deck';
+import { Deck } from '../../types/types';
 import { SessionProvider } from '../../providers/session';
 
 @Component({
@@ -34,7 +34,7 @@ export class DecksPage {
 
     toggleDeck(event, deck: Deck) {
         console.log("DecksPage.toggleDeck(\"" + deck.name + "\")");
-        
+
         this.session.toggleDeck(deck);
     }
 
