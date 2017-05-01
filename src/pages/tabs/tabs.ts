@@ -6,17 +6,16 @@ import { DecksPage } from '../decks/decks';
 import { SettingsPage } from '../settings/settings';
 
 @Component({
-  templateUrl: 'tabs.html'
+    templateUrl: 'tabs.html'
 })
-
 export class TabsPage {
 
-  tabTrainRoot = TrainPage;
-  tabStatsRoot = StatsPage;
-  tabDecksRoot = DecksPage;
-  tabSettingsRoot = SettingsPage;
+    tabTrainRoot = TrainPage;
+    tabStatsRoot = StatsPage;
+    tabDecksRoot = DecksPage;
+    tabSettingsRoot = SettingsPage;
 
-  constructor() {
+    constructor() {
 
-  }
+    }
 }

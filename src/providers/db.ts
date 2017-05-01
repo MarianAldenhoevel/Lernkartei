@@ -4,7 +4,6 @@ import "rxjs/add/operator/map";
 import { Deck, Card } from "../types/types";
 
 @Injectable()
-
 export class DBProvider {
     private allDecks: Array<Deck> = 
         [

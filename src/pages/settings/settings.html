@@ -1,13 +1,23 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      {{ "SETTINGS" | translate }}
-    </ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <ion-title>
+            {{ "SETTINGS" | translate }}
+        </ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
-    <button ion-item (click)="aboutClick($event)">{{ "ABOUT" | translate }}</button>
-  </ion-list>
+    <ion-list>
+        <ion-item (click)="aboutClick($event)">{{ "ABOUT" | translate }}...
+        </ion-item>
+        <ion-item (click)="backgroundStyleClick($event)">{{ "BACKGROUND_STYLE" | translate }}...
+            <ion-badge item-right [style.backgroundColor]="session.settings.background">&nbsp;</ion-badge>
+        </ion-item>
+        <ion-item (click)="cardFrontStyleClick($event)">{{ "CARD_FRONT_STYLE" | translate }}...
+            <ion-badge item-right [style.backgroundColor]="session.settings.card.front.backgroundColor" [style.color]="session.settings.card.front.color">Text</ion-badge>
+        </ion-item>
+        <ion-item (click)="cardBackStyleClick($event)">{{ "CARD_BACK_STYLE" | translate }}...
+            <ion-badge item-right [style.backgroundColor]="session.settings.card.back.backgroundColor" [style.color]="session.settings.card.back.color">Text</ion-badge>
+        </ion-item>
+    </ion-list>
 </ion-content>

@@ -5,7 +5,6 @@ import { NavController } from 'ionic-angular';
   selector: 'page-import-deck',
   templateUrl: 'import-deck.html'
 })
-
 export class ImportDeckPage {
 
   constructor(public navCtrl: NavController) {

@@ -12,5 +12,13 @@
     "TRAIN": "Train",
     "FLIP": "Flip",
     "KNOW": "Yes",
-    "DONTKNOW": "No"
+    "DONTKNOW": "No",
+    "SAMPLE": "Sample text",
+    "BACKGROUND_COLOR": "Background color",
+    "COLOR": "Text color",
+    "BACKGROUND_STYLE": "Background color",
+    "CARD_FRONT_STYLE": "Card front",
+    "CARD_BACK_STYLE": "Card back",
+    "OK": "Ok",
+    "CANCEL": "Cancel"
 }

@@ -8,14 +8,28 @@ import { Deck, Card } from '../types/types';
 import { DBProvider } from './db';
 
 @Injectable()
-
 export class SessionProvider {
     public deckFilter: string = null;
+
     public appVersion = {
         "appName": null,
         "packageName": null,
         "versionCode": null,
         "versionNumber": null
+    };
+
+    public settings = {
+        "background": "#cccccc",
+        "card": {
+            "front": {
+                "backgroundColor": "#ffff00",
+                "color": "#00ffff"
+                },
+            "back": {
+                "backgroundColor": "#ffffff",
+                "color": "#000000"
+            }
+        }
     };
 
     private allDecks: Array<Deck>;

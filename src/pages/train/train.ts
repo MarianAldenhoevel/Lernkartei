@@ -6,10 +6,9 @@ import { Card } from '../../types/types';
 import { SessionProvider } from '../../providers/session';
 
 @Component({
-    selector: 'page-home',
+    selector: 'page-train',
     templateUrl: 'train.html'
 })
-
 export class TrainPage {
     public currentCard: Card = null;
     public flipped: boolean = false;
@@ -23,25 +22,26 @@ export class TrainPage {
     }
 
     knowClick(event): void {
-        console.log("Trainpage.knowClick()");
+        console.log("TrainPage.knowClick()");
 
         this.session.know(this.currentCard);
         this.nextCard();
     }
 
     flipClick(event): void {
-        console.log("Trainpage.flipClick()");
+        console.log("TrainPage.flipClick()");
 
         this.flipped = !this.flipped;
     }
 
     dontKnowClick(event): void {
-        console.log("Trainpage.dontKnowClick()");
+        console.log("TrainPage.dontKnowClick()");
 
         this.session.dontKnow(this.currentCard);
         this.nextCard();
     }
 
+/*
     ionViewDidLoad(): void {
         console.log("TrainPage.ionViewDidLoad()");
     }
@@ -75,5 +75,5 @@ export class TrainPage {
     ionViewWillUnload(): void {
         console.log("TrainPage.ionViewWillUnload()");
     }
-
+*/
 }

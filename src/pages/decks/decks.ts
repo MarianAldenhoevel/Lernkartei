@@ -10,7 +10,6 @@ import { SessionProvider } from '../../providers/session';
     selector: 'page-decks',
     templateUrl: 'decks.html'
 })
-
 export class DecksPage {
     decks: Array<Deck>;
 

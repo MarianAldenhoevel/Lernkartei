@@ -7,7 +7,6 @@ import { SessionProvider } from '../../providers/session';
   selector: 'page-about',
   templateUrl: 'about.html'
 })
-
 export class AboutPage {
   
   constructor(public navCtrl: NavController, public session: SessionProvider) {

@@ -5,7 +5,6 @@ import { NavController } from 'ionic-angular';
     selector: 'page-about',
     templateUrl: 'stats.html'
 })
-
 export class StatsPage {
 
     constructor(public navCtrl: NavController) {

@@ -12,5 +12,13 @@
     "TRAIN": "Üben",
     "FLIP": "Umdrehen",
     "KNOW": "Ja",
-    "DONTKNOW": "Nein"
+    "DONTKNOW": "Nein",
+    "SAMPLE": "Beispieltext",
+    "BACKGROUND_COLOR": "Hintergrundfarbe",
+    "COLOR": "Textfarbe",
+    "BACKGROUND_STYLE": "Hintergrundfarbe",
+    "CARD_FRONT_STYLE": "Karten Vorderseite",
+    "CARD_BACK_STYLE": "Karten Rückseite",
+    "OK": "Ok",
+    "CANCEL": "Abbbruch"
 }
