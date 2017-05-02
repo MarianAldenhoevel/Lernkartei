@@ -4,7 +4,7 @@ import 'rxjs/add/operator/map';
 import { Device } from '@ionic-native/device';
 import { AppVersion } from '@ionic-native/app-version';
 
-import { Deck, Card } from '../types/types';
+import { Deck, Card, CardPresentationMode, Outcome } from '../types/types';
 import { DBProvider } from './db';
 
 @Injectable()
@@ -18,15 +18,19 @@ export class SessionProvider {
         "versionNumber": null
     };
 
+    public cpr: CardPresentationMode =  CardPresentationMode.FrontFirst; 
+
     public settings = {
-        "background": "#cccccc",
+        "animateCard": true,
+        "cardPresentationMode": 1,
+        "background": "#eeeeee",
         "card": {
             "front": {
-                "backgroundColor": "#ffff00",
-                "color": "#00ffff"
+                "backgroundColor": "#ffffff",
+                "color": "#000000"
                 },
             "back": {
-                "backgroundColor": "#ffffff",
+                "backgroundColor": "#dddddd",
                 "color": "#000000"
             }
         }
@@ -46,6 +50,14 @@ export class SessionProvider {
         _appVersion.getPackageName().then((s) => { this.appVersion.packageName = s }).catch((err) => { });
         _appVersion.getVersionCode().then((s) => { this.appVersion.versionCode = s }).catch((err) => { });
         _appVersion.getVersionNumber().then((s) => { this.appVersion.versionNumber = s }).catch((err) => { });
+    }
+
+    loadSettings(): void {
+        console.log("SessionProvider.loadSettings()");
+    }
+
+    saveSettings(): void {
+        console.log("SessionProvider.saveSettings()");
     }
 
     setDeckFilter(deckFilter: string) {
@@ -114,12 +126,8 @@ export class SessionProvider {
         return this.db.getNextCard();
     }
 
-    know(card: Card) {
-        console.log("SessionProvider.know()");
-    }
-
-    dontKnow(card: Card) {
-        console.log("SessionProvider.dontKnow()");
+    recordOutcome(card: Card, outcome: Outcome) {
+        console.log("SessionProvider.recordOutcome()");
     }
 
 } // of class

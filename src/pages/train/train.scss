@@ -1,5 +1,89 @@
 page-train {
 
+    // Things that should be the same for left and right slide-outs.
+    $slide-animation-duration: .65s;
+    $slide-animation-timing-function: cubic-bezier(0.250, 0.460, 0.450, 0.940); /* easeOutQuad */
+
+    .content {
+        margin-top: 2em;
+        margin-bottom: 2em;
+    }
+
+    @keyframes flipOut {
+        from {
+            transform: perspective(400px);
+        }
+
+        to {
+            transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+        }
+    }
+
+    .flippingOut {
+        -webkit-backface-visibility: visible !important;
+        backface-visibility: visible !important;
+        animation-name: flipOut;
+        animation-duration: .50s;
+        animation-timing-function: ease-in; // slow start, fast end
+    }
+
+    @keyframes flipIn {
+        from {
+            transform: perspective(400px) rotate3d(0, 1, 0, -90deg);
+        }
+
+        to {
+            transform: perspective(400px);
+        }
+    }
+
+    .flippingIn {
+        transform: perspective(400px);
+        -webkit-backface-visibility: visible !important;
+        backface-visibility: visible !important;
+        animation-name: flipIn;
+        animation-duration: .50s;
+        animation-timing-function: ease-out; // fast start, slow end
+    }
+
+    @keyframes slideOutLeft {
+        from {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;        
+        }
+
+        to {
+            transform: translate3d(-200%, 0, 0);
+            opacity: 0;            
+        }
+    }
+
+    .slidingOutLeft {
+        transform: translate3d(0, 0, 0);
+        animation-name: slideOutLeft;
+        animation-duration: $slide-animation-duration;
+        animation-timing-function: $slide-animation-timing-function
+    }
+
+    @keyframes slideOutRight {
+        from {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;        
+        }
+
+        to {
+            transform: translate3d(200%, 0, 0);
+            opacity: 0;            
+        }
+    }
+
+    .slidingOutRight {
+        transform: translate3d(0, 0, 0);
+        animation-name: slideOutRight;
+        animation-duration: $slide-animation-duration;
+        animation-timing-function: $slide-animation-timing-function
+    }
+
     div.statspanel {
         padding-top: 0.5em;
         padding-bottom: 0.5em;

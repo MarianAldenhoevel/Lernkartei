@@ -11,7 +11,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Device } from '@ionic-native/device';
 import { AppVersion } from '@ionic-native/app-version';
 
-import { ColorPicker } from '../components/color-picker';
+// import { ColorPicker } from '../components/color-picker-palette/color-picker-palette';
+import { ColorPicker } from '../components/color-picker-sliders/color-picker-sliders';
 
 import { StyleModal } from '../modals/style/style';
 

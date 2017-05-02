@@ -13,12 +13,17 @@
     "FLIP": "Umdrehen",
     "KNOW": "Ja",
     "DONTKNOW": "Nein",
-    "SAMPLE": "Beispieltext",
+    "PREVIEW": "Vorschau",
     "BACKGROUND_COLOR": "Hintergrundfarbe",
     "COLOR": "Textfarbe",
     "BACKGROUND_STYLE": "Hintergrundfarbe",
-    "CARD_FRONT_STYLE": "Karten Vorderseite",
-    "CARD_BACK_STYLE": "Karten Rückseite",
+    "CARD_FRONT_STYLE": "Kartenvorderseite",
+    "CARD_BACK_STYLE": "Kartenrückseite",
     "OK": "Ok",
-    "CANCEL": "Abbbruch"
+    "CANCEL": "Abbbruch",
+    "ANIMATE_CARD": "Karten animieren",
+    "CARD_PRESENTATION_MODE": "Kartenvorlage",
+    "CARD_PRESENTATION_MODE_FRONT_FIRST": "Vorderseite",
+    "CARD_PRESENTATION_MODE_BACK_FIRST": "Rückseite",
+    "CARD_PRESENTATION_MODE_RANDOM_SIDE_FIRST": "Zufällige Seite"
 }

@@ -13,30 +13,30 @@
 </ion-header>
 
 <ion-content padding [style.backgroundColor]="session.settings.background">
-    <ion-card [style.backgroundColor]="flipped ? session.settings.card.back.backgroundColor : session.settings.card.front.backgroundColor"
+    <ion-card 
+        [ngClass]='{
+            "slidingOutRight": (animationClass=="slidingOutRight"),
+            "slidingOutLeft": (animationClass=="slidingOutLeft"),
+            "flippingOut": (animationClass=="flippingOut"), 
+            "flippingIn": (animationClass=="flippingIn")
+        }' 
+        [style.backgroundColor]="flipped ? session.settings.card.back.backgroundColor : session.settings.card.front.backgroundColor"
         [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color">
-        <ion-card-header [style.backgroundColor]="flipped ? session.settings.card.back.backgroundColor : session.settings.card.front.backgroundColor"
-            [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color">
-            Name of Deck
-            <ion-note item-right [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color">
-                8/37
-            </ion-note>
-        </ion-card-header>
-        <ion-item [style.backgroundColor]="flipped ? session.settings.card.back.backgroundColor : session.settings.card.front.backgroundColor"
-            [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color">
-            <h2 *ngIf="flipped" [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color">
-                {{currentCard.front}}
-            </h2>
-            <h2 *ngIf="!flipped" [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color">
-                {{currentCard.back}}
-            </h2>
-        </ion-item>
-        <!--
         <ion-card-content>
-            <p>Wait a minute. Wait a minute, Doc. Uhhh... Are you telling me that you built a time machine... out of a DeLorean?!
-                Whoa. This is heavy.</p>
+            <h2>
+                Name of Deck
+                <ion-note item-right [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color">
+                    8/37
+                </ion-note>
+            </h2>
+            <hr />
+            <div class="content" *ngIf="flipped">
+                {{currentCard.front}}
+            </div>
+            <div class="content" *ngIf="!flipped">
+                {{currentCard.back}}
+            </div>
         </ion-card-content>
--->
     </ion-card>
 </ion-content>
 
@@ -45,21 +45,21 @@
         <ion-row>
             <div *ngIf="currentCard">
                 <ion-col>
-                    <button (click)="knowClick($event)" ion-button icon-left clear small color="secondary">
-                        <ion-icon name="thumbs-up"></ion-icon>
-                        <div>{{ "KNOW" | translate }}</div>
+                    <button ion-button (click)="dontKnowClick($event)" icon-left clear small color="danger">
+                        <ion-icon name="thumbs-down"></ion-icon>                        
+                        {{ "DONTKNOW" | translate }}                        
                     </button>
                 </ion-col>
                 <ion-col>
-                    <button (click)="flipClick($event)" ion-button icon-left clear small color="dark">
+                    <button ion-button (click)="flipClick($event)" icon-left clear small color="dark">
                         <ion-icon name="sync"></ion-icon>
-                        <div>{{ "FLIP" | translate }}</div>
+                        {{ "FLIP" | translate }}
                     </button>
                 </ion-col>
-                <ion-col center text-center>
-                    <button (click)="dontKnowClick($event)" ion-button icon-right clear small color="danger">
-                        <ion-icon name="thumbs-down"></ion-icon>
-                        <div>{{ "DONTKNOW" | translate }}</div>
+                <ion-col>
+                    <button ion-button (click)="knowClick($event)" icon-right clear small color="secondary">
+                        {{ "KNOW" | translate }}
+                        <ion-icon name="thumbs-up"></ion-icon>                       
                     </button>
                 </ion-col>
             </div>

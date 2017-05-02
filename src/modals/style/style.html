@@ -7,17 +7,17 @@
 </ion-header>
 
 <ion-content padding>
-    <div *ngIf="(modalParams.flags.useBackgroundColor && modalParams.flags.useColor)">
-        <h2 class="color-swatch" [style.backgroundColor]="modalParams.style.backgroundColor" [style.color]="modalParams.style.color">{{ "SAMPLE" | translate }}</h2>
-    </div>
-    <div *ngIf="modalParams.flags.useBackgroundColor">
+    <ion-label *ngIf="(modalParams.flags.useBackgroundColor && modalParams.flags.useColor)" class="color-swatch" [style.backgroundColor]="modalParams.style.backgroundColor" [style.color]="modalParams.style.color">
+        <h3 style="margin-top: 0px;" *ngIf="modalParams.flags.useColor">{{ "PREVIEW" | translate }}</h3>
+    </ion-label>
+    <ion-label *ngIf="modalParams.flags.useBackgroundColor">
         <h2>{{ "BACKGROUND_COLOR" | translate }}</h2>
-        <color-picker [hexColor]="modalParams.style.backgroundColor" (colorChanged)="setBackgroundColor($event)"></color-picker>
-    </div>
-    <div *ngIf="modalParams.flags.useColor">
+        <color-picker [color]="modalParams.style.backgroundColor" (colorChanged)="setBackgroundColor($event)"></color-picker>
+    </ion-label>
+    <ion-label *ngIf="modalParams.flags.useColor">
         <h2>{{ "COLOR" | translate }}</h2>
-        <color-picker [hexColor]="modalParams.style.color" (colorChanged)="setColor($event)"></color-picker>
-    </div>
+        <color-picker [color]="modalParams.style.color" (colorChanged)="setColor($event)"></color-picker>
+    </ion-label>
     <ion-buttons start>
         <button ion-button (click)="okClick()">{{ "OK" | translate }}</button>
         <button ion-button (click)="cancelClick()">{{ "CANCEL" | translate }}</button>

@@ -37,6 +37,18 @@ export class SettingsPage {
         modal.present();
     }
 
+    cardPresentationModeClick(event): void {
+        console.log("SettingsPage.cardPresentationModeClick()");
+        
+        this.session.settings.cardPresentationMode = parseInt(event);
+    }
+
+    animateCardClick(event): void {
+        console.log("SettingsPage.animateCardClick()");
+
+        this.session.settings.animateCard = !this.session.settings.animateCard;
+    }
+
     backgroundStyleClick(event): void {
         console.log("SettingsPage.backgroundStyleClick()");
 
@@ -78,4 +90,11 @@ export class SettingsPage {
             }
         }, (style) => { this.session.settings.card.back = style });
     }
+
+    ionViewWillLeave(): void {
+        console.log("SettingsPage.ionViewWillLeave()");
+        
+        this.session.saveSettings();
+    }
+
 }

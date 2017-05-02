@@ -1,0 +1,18 @@
+<ion-item>
+    <ion-range #redSlider style="color: #ff0000;" debounce="500" min="0" max="255" step="1" [(ngModel)]="redComponent" (ionChange)="componentChange()">
+        <ion-icon color="dark" small range-left name="sunny"></ion-icon>
+        <ion-icon small range-right name="sunny">&nbsp;<ion-badge style="color: #ffffff; background-color: #ff0000;">{{ redComponent | number:"3.0" }}</ion-badge></ion-icon>
+    </ion-range>
+</ion-item>
+<ion-item>
+    <ion-range #greenSlider style="color: #00aa00;" debounce="500" min="0" max="255" step="1" [(ngModel)]="greenComponent" (ionChange)="componentChange()">
+        <ion-icon color="dark" small range-left name="sunny"></ion-icon>
+        <ion-icon small range-right name="sunny">&nbsp;<ion-badge style="color: #ffffff; background-color: #00aa00;">{{ greenComponent | number:"3.0" }}</ion-badge></ion-icon>
+    </ion-range>
+</ion-item>
+<ion-item>
+    <ion-range #blueSlider style="color: #0000ff;" debounce="500" min="0" max="255" step="" [(ngModel)]="blueComponent" (ionChange)="componentChange()">
+        <ion-icon color="dark" small range-left name="sunny"></ion-icon>
+        <ion-icon small range-right name="sunny">&nbsp;<ion-badge style="color: #ffffff; background-color: #0000ff;">{{ blueComponent | number:"3.0" }}</ion-badge></ion-icon>
+    </ion-range>
+</ion-item>

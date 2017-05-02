@@ -7,17 +7,32 @@
 </ion-header>
 
 <ion-content padding>
-    <ion-list>
-        <ion-item (click)="aboutClick($event)">{{ "ABOUT" | translate }}...
-        </ion-item>
-        <ion-item (click)="backgroundStyleClick($event)">{{ "BACKGROUND_STYLE" | translate }}...
-            <ion-badge item-right [style.backgroundColor]="session.settings.background">&nbsp;</ion-badge>
-        </ion-item>
-        <ion-item (click)="cardFrontStyleClick($event)">{{ "CARD_FRONT_STYLE" | translate }}...
-            <ion-badge item-right [style.backgroundColor]="session.settings.card.front.backgroundColor" [style.color]="session.settings.card.front.color">Text</ion-badge>
-        </ion-item>
-        <ion-item (click)="cardBackStyleClick($event)">{{ "CARD_BACK_STYLE" | translate }}...
-            <ion-badge item-right [style.backgroundColor]="session.settings.card.back.backgroundColor" [style.color]="session.settings.card.back.color">Text</ion-badge>
-        </ion-item>
-    </ion-list>
+    <button ion-item (click)="aboutClick($event)">
+        <ion-label>{{ "ABOUT" | translate }}...</ion-label>
+    </button>
+    <ion-item>
+        <ion-label>{{ "ANIMATE_CARD" | translate }}</ion-label>
+        <ion-toggle item-right [checked]="session.settings.animateCard" (click)="animateCardClick($event)"></ion-toggle>
+    </ion-item>
+    <ion-item>
+        <ion-label>{{ "CARD_PRESENTATION_MODE" | translate }}</ion-label>
+        <ion-select [ngModel]="session.settings.cardPresentationMode" (ngModelChange)="cardPresentationModeClick($event)">
+            <ion-option value="1">{{ "CARD_PRESENTATION_MODE_FRONT_FIRST" | translate }}</ion-option>
+            <ion-option value="2">{{ "CARD_PRESENTATION_MODE_BACK_FIRST" | translate }}</ion-option>
+            <ion-option value="3">{{ "CARD_PRESENTATION_MODE_RANDOM_SIDE_FIRST" | translate }}</ion-option>
+        </ion-select>
+    </ion-item>
+    <button ion-item (click)="backgroundStyleClick($event)">
+        <ion-label>{{ "BACKGROUND_STYLE" | translate }}...</ion-label>
+        <ion-badge item-right [style.backgroundColor]="session.settings.background">&nbsp;</ion-badge>
+    </button>
+    <button ion-item (click)="cardFrontStyleClick($event)">
+        <ion-label>{{ "CARD_FRONT_STYLE" | translate }}...</ion-label>
+        <ion-badge item-right [style.backgroundColor]="session.settings.card.front.backgroundColor" [style.color]="session.settings.card.front.color">Text</ion-badge>
+    </button>
+    <button ion-item (click)="cardBackStyleClick($event)">
+        <ion-label>{{ "CARD_BACK_STYLE" | translate }}...</ion-label>
+        <ion-badge item-right [style.backgroundColor]="session.settings.card.back.backgroundColor" [style.color]="session.settings.card.back.color">Text</ion-badge>
+    </button>
+
 </ion-content>

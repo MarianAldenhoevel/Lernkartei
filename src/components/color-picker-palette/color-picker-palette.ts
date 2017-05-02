@@ -19,10 +19,9 @@ const POUCH = [
     template: ` <canvas #palette style="background:white;" class='center'></canvas>
   <canvas #chooser style="background: white; margin-top: 20px; margin-bottom: 20px; " class='center'></canvas>`
 })
-
 export class ColorPicker {
 
-    @Input() hexColor: string;
+    @Input() color: string;
 
     @Output() colorChanged = new EventEmitter<String>();
 
@@ -36,8 +35,6 @@ export class ColorPicker {
 
     requestAnimationFrameID: number;
 
-    color: string;
-
     colorFromChooser: string;
 
     paletteX: number;
@@ -47,8 +44,8 @@ export class ColorPicker {
     chooserX: number;
 
     public ngOnInit() {
-        if (this.hexColor) {
-            this.colorFromChooser = this.hexColor;
+        if (this.color) {
+            this.colorFromChooser = this.color;
         } else {
             this.colorFromChooser = "#0000FF";
         }

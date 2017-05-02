@@ -31,7 +31,7 @@ export class StyleModal {
     };
 
     constructor(private viewCtrl: ViewController, public params: NavParams) {
-        console.log("StyleModal.constructor()");
+        // console.log("StyleModal.constructor()");
 
         this.modalParams.title = this.params.get("title");
         this.modalParams.style = this.params.get("style");
@@ -40,7 +40,7 @@ export class StyleModal {
 
     setBackgroundColor(event): void {
         // console.log("StyleModal.setBackgroundColor()");
-    
+        
         if (this.modalParams.flags.useBackgroundColor) {
             this.modalParams.style.backgroundColor = event;
         }
@@ -48,20 +48,20 @@ export class StyleModal {
 
     setColor(event): void {
         // console.log("StyleModal.setColor()");
-
+        
         if (this.modalParams.flags.useColor) {
             this.modalParams.style.color = event;
         }
     }
 
     okClick(data) {
-        console.log("StyleModal.okClick()");
+        // console.log("StyleModal.okClick()");
 
         this.viewCtrl.dismiss(this.modalParams);
     }
 
     cancelClick(data) {
-        console.log("StyleModal.cancelClick()");
+        // console.log("StyleModal.cancelClick()");
 
         this.viewCtrl.dismiss();
     }

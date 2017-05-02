@@ -13,12 +13,17 @@
     "FLIP": "Flip",
     "KNOW": "Yes",
     "DONTKNOW": "No",
-    "SAMPLE": "Sample text",
+    "PREVIEW": "Preview",
     "BACKGROUND_COLOR": "Background color",
     "COLOR": "Text color",
     "BACKGROUND_STYLE": "Background color",
     "CARD_FRONT_STYLE": "Card front",
     "CARD_BACK_STYLE": "Card back",
     "OK": "Ok",
-    "CANCEL": "Cancel"
+    "CANCEL": "Cancel",
+    "ANIMATE_CARD": "Animate cards",
+    "CARD_PRESENTATION_MODE": "Card presentation",
+    "CARD_PRESENTATION_MODE_FRONT_FIRST": "Front first",
+    "CARD_PRESENTATION_MODE_BACK_FIRST": "Back first",
+    "CARD_PRESENTATION_MODE_RANDOM_SIDE_FIRST": "Random face first"
 }
