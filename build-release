@@ -1,0 +1,5 @@
+#!/bin/bash
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore "Lernkartei.keystore" "platforms/android/build/outputs/apk/android-release-unsigned.apk" "Lernkartei-release" -storepass Lernkartei -keypass Lernkartei 
+zipalign -v 4 "platforms/android/build/outputs/apk/android-release-unsigned.apk" "build/android-release.apk"
+del "platforms\android\build\outputs\apk\android-release-unsigned.apk" 
