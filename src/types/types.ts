@@ -11,6 +11,18 @@ export interface Card {
     "back": string
 }
 
+export enum CardPresentationMode {
+    FrontFirst = 1,
+    BackFirst = 2,
+    RandomSideFirst = 3
+}
+
+export enum CardStatus {
+    NeverAnswered = 0,
+    Unknown = 1,
+    Known =2
+}
+
 export enum Outcome {
     Known = 1,
     Unknown = 2
@@ -19,10 +31,4 @@ export enum Outcome {
 export interface Style {
     "backgroundColor": string,
     "color": string
-}
-
-export enum CardPresentationMode {
-    FrontFirst = 1,
-    BackFirst = 2,
-    RandomSideFirst = 3
 }

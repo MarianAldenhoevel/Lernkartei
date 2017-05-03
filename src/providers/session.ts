@@ -18,11 +18,9 @@ export class SessionProvider {
         "versionNumber": null
     };
 
-    public cpr: CardPresentationMode =  CardPresentationMode.FrontFirst; 
-
     public settings = {
         "animateCard": true,
-        "cardPresentationMode": 1,
+        "cardPresentationMode": CardPresentationMode.FrontFirst,
         "background": "#eeeeee",
         "card": {
             "front": {
@@ -38,6 +36,8 @@ export class SessionProvider {
 
     private allDecks: Array<Deck>;
     private filteredDecks: Array<Deck>;
+
+    private currentCardStack: Array<Card>;
 
     constructor(public device: Device, public db: DBProvider, private _appVersion: AppVersion) {
         console.log('SessionProvider.constructor()');
@@ -100,16 +100,39 @@ export class SessionProvider {
         } else {
             // Create new filtered set and resolve to it.
             return new Promise(resolve => {
-                this.getAllDecks().then((alldecks) => {
+                this.getAllDecks().then((allDecks) => {
                     if (!this.deckFilter) {
                         // No filtering requested.
-                        this.filteredDecks = alldecks;
+                        this.filteredDecks = allDecks;
                     } else {
                         // Apply filter to complete set, and store result 
-                        this.filteredDecks = alldecks.filter((deck: Deck) => { return deck.name.toUpperCase().indexOf(this.deckFilter.toUpperCase()) != -1 });
+                        this.filteredDecks = allDecks.filter((deck: Deck) => { return deck.name.toUpperCase().indexOf(this.deckFilter.toUpperCase()) != -1 });
                     }
 
                     resolve(this.filteredDecks);
+                })
+            })
+        }
+    }
+
+    invalidateCurrentCardStack(): void {
+        console.log("SessionProvider.invalidateCurrentCardStack()");
+
+        this.currentCardStack = null;
+    }
+
+    getCurrentCardStack(): Promise<Array<Card>> {
+        console.log("SessionProvider.getCurrentCardStack()");
+
+        if (this.currentCardStack) {
+            // Have current stack of cards, resolve to that.
+            return Promise.resolve(this.currentCardStack);
+        } else {
+            // Load stack of all cards in all decks filtered AND active
+            return new Promise(resolve => {
+                this.db.getCurrentCardStack(this.deckFilter).then((currentCardStack) => {
+                    this.currentCardStack = currentCardStack;
+                    resolve(this.currentCardStack);
                 })
             })
         }

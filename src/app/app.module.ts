@@ -10,6 +10,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Device } from '@ionic-native/device';
 import { AppVersion } from '@ionic-native/app-version';
+import { SQLite } from '@ionic-native/sqlite';
 
 // import { ColorPicker } from '../components/color-picker-palette/color-picker-palette';
 import { ColorPicker } from '../components/color-picker-sliders/color-picker-sliders';
@@ -70,6 +71,7 @@ import { DBProvider } from '../providers/db';
         AppVersion,
         SessionProvider,
         DBProvider,
+        SQLite,
         { provide: ErrorHandler, useClass: IonicErrorHandler }
     ]
 })

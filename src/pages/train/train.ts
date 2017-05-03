@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { Card, CardPresentationMode, Outcome } from '../../types/types';
 
@@ -15,8 +16,7 @@ export class TrainPage {
     public animationClass: string = "";
     public animationTimeoutID: number = 0;
 
-    constructor(public navCtrl: NavController, public session: SessionProvider) {
-        this.nextCard();
+    constructor(public navCtrl: NavController, public splashScreen: SplashScreen, public session: SessionProvider) {
     }
 
     nextCard(): void {
@@ -141,6 +141,13 @@ export class TrainPage {
         }
     }
 
+    ionViewDidEnter(): void {
+        console.log("TrainPage.ionViewDidEnter()");
+
+        this.splashScreen.hide();
+        this.nextCard();
+    }
+
     /*
         ionViewDidLoad(): void {
             console.log("TrainPage.ionViewDidLoad()");
@@ -153,10 +160,6 @@ export class TrainPage {
     
         ionViewWillEnter(): void {
             console.log("TrainPage.ionViewWillLoad()");
-        }
-    
-        ionViewDidEnter(): void {
-            console.log("TrainPage.ionViewDidEnter()");
         }
     
         ionViewCanLeave(): boolean {
