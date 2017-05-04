@@ -34,5 +34,8 @@
         <ion-label>{{ "CARD_BACK_STYLE" | translate }}...</ion-label>
         <ion-badge item-right [style.backgroundColor]="session.settings.card.back.backgroundColor" [style.color]="session.settings.card.back.color">Text</ion-badge>
     </button>
+    <button ion-item (click)="dropDbClick($event)">
+        <ion-label>{{ "DROP_DB" | translate }}...</ion-label>        
+    </button>
 
 </ion-content>

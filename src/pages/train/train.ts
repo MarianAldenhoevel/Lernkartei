@@ -141,16 +141,16 @@ export class TrainPage {
         }
     }
 
-    ionViewDidEnter(): void {
-        console.log("TrainPage.ionViewDidEnter()");
+    ionViewDidLoad(): void {
+        console.log("TrainPage.ionViewDidLoad()");
 
-        this.splashScreen.hide();
         this.nextCard();
+        this.splashScreen.hide();
     }
 
     /*
-        ionViewDidLoad(): void {
-            console.log("TrainPage.ionViewDidLoad()");
+        ionViewDidEnter(): void {
+            console.log("TrainPage.ionViewDidEnter()");
         }
     
         ionViewCanEnter(): boolean {

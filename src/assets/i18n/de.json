@@ -21,9 +21,14 @@
     "CARD_BACK_STYLE": "Kartenrückseite",
     "OK": "Ok",
     "CANCEL": "Abbbruch",
+    "YES": "Ja",
+    "NO": "Nein",
     "ANIMATE_CARD": "Karten animieren",
     "CARD_PRESENTATION_MODE": "Kartenvorlage",
     "CARD_PRESENTATION_MODE_FRONT_FIRST": "Vorderseite",
     "CARD_PRESENTATION_MODE_BACK_FIRST": "Rückseite",
-    "CARD_PRESENTATION_MODE_RANDOM_SIDE_FIRST": "Zufällige Seite"
+    "CARD_PRESENTATION_MODE_RANDOM_SIDE_FIRST": "Zufällige Seite",
+    "DROP_DB": "Datenbank löschen",
+    "CONFIRM": "Bestätigung",
+    "CONFIRM_DROP_DB": "Wollen Sie die Datenbank wirklich löschen? Alle Daten gehen verloren und die App wird beendet!"
 }

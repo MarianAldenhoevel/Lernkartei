@@ -21,9 +21,14 @@
     "CARD_BACK_STYLE": "Card back",
     "OK": "Ok",
     "CANCEL": "Cancel",
+    "YES": "Yes",
+    "NO": "No",
     "ANIMATE_CARD": "Animate cards",
     "CARD_PRESENTATION_MODE": "Card presentation",
     "CARD_PRESENTATION_MODE_FRONT_FIRST": "Front first",
     "CARD_PRESENTATION_MODE_BACK_FIRST": "Back first",
-    "CARD_PRESENTATION_MODE_RANDOM_SIDE_FIRST": "Random face first"
+    "CARD_PRESENTATION_MODE_RANDOM_SIDE_FIRST": "Random face first",
+    "DROP_DB": "Drop DB",
+    "CONFIRM": "Confirm",
+    "CONFIRM_DROP_DB": "Do you really want to drop the DB? All data will be lost and the app will be closed!"
 }

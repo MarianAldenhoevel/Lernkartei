@@ -26,9 +26,7 @@
         <p>VersionCode: {{session.appVersion.versionCode}}</p>
         <p>VersionNumber: {{session.appVersion.versionNumber}}</p>
       </div>
-      <div *ngIf="!session.appVersion.appName">
-        <p>{{ "NA" | translate }}</p>
-      </div>
+      <p>DB-System: {{ db.useWebSQL ? "WebSQL" : "SQLite" }}</p>
     </ion-item>
     <ion-item>
       <h2>{{ "DEVICE_INFO" | translate }}</h2>

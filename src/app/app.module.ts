@@ -4,7 +4,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { LernkarteiApp } from './app.component';
 
 import { Http } from '@angular/http';
-import { TranslateModule, TranslateStaticLoader, TranslateLoader } from 'ng2-translate/ng2-translate';
+import { TranslateModule, TranslateStaticLoader, TranslateLoader, TranslateService } from 'ng2-translate/ng2-translate';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -69,6 +69,7 @@ import { DBProvider } from '../providers/db';
         SplashScreen,
         Device,
         AppVersion,
+        TranslateService,
         SessionProvider,
         DBProvider,
         SQLite,

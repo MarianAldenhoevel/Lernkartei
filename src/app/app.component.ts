@@ -8,6 +8,7 @@ import { TranslateService } from 'ng2-translate';
 
 import { TabsPage } from '../pages/tabs/tabs';
 
+import { SessionProvider } from '../providers/session';
 import { DBProvider } from '../providers/db';
 
 @Component({
@@ -16,13 +17,21 @@ import { DBProvider } from '../providers/db';
 export class LernkarteiApp {
     rootPage: any = TabsPage;
 
-    constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, device: Device, translate: TranslateService, db: DBProvider) {
+    constructor(
+        platform: Platform, 
+        statusBar: StatusBar, 
+        splashScreen: SplashScreen, 
+        device: Device, 
+        translate: TranslateService, 
+        session: SessionProvider, 
+        db: DBProvider) {
+        
         console.log("LernkarteApp.constructor()");
 
         platform.ready().then(() => {
             console.log("LernkarteApp.constructor().ready()");
 
-            db.openDB().then(() => { console.log("LernkarteApp.constructor().ready() - DB initialization complete") });
+            db.openDB().then(() => session.loadSettings());
 
             // Set up translation-system
             translate.setDefaultLang('en');

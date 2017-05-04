@@ -54,10 +54,17 @@ export class SessionProvider {
 
     loadSettings(): void {
         console.log("SessionProvider.loadSettings()");
+
+        this.db.getSetting("settings").then((value) => { 
+            console.log("SessionProvider.loadSettings() - loaded");
+            Object.assign(this.settings, value);
+        });
     }
 
     saveSettings(): void {
         console.log("SessionProvider.saveSettings()");
+
+        this.db.updateSetting("settings", this.settings);
     }
 
     setDeckFilter(deckFilter: string) {
@@ -142,6 +149,7 @@ export class SessionProvider {
         console.log("SessionProvider.toggleDeck(\"" + deck.name + "\")");
 
         deck.active = !deck.active;
+        this.db.updateDeck(deck);
     }
 
     getNextCard(): Promise<Card> {
