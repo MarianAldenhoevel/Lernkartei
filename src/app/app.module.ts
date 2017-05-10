@@ -14,6 +14,7 @@ import { SQLite } from '@ionic-native/sqlite';
 
 // import { ColorPicker } from '../components/color-picker-palette/color-picker-palette';
 import { ColorPicker } from '../components/color-picker-sliders/color-picker-sliders';
+import { TrainingStats } from '../components/training-stats/training-stats';
 
 import { StyleModal } from '../modals/style/style';
 
@@ -32,6 +33,7 @@ import { DBProvider } from '../providers/db';
     declarations: [
         LernkarteiApp,
         ColorPicker,
+        TrainingStats,
         StyleModal,
         TabsPage,
         TrainPage,

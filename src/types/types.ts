@@ -2,13 +2,14 @@ export interface Deck {
     "id": number,
     "name": string,
     "active": boolean,
-    "count": number
+    "card_count": number
 }
 
 export interface Card {
     "id": string,
     "front": string,
-    "back": string
+    "back": string,
+    "current_box": number
 }
 
 export enum CardPresentationMode {
@@ -17,15 +18,9 @@ export enum CardPresentationMode {
     RandomSideFirst = 3
 }
 
-export enum CardStatus {
-    NeverAnswered = 0,
-    Unknown = 1,
-    Known =2
-}
-
-export enum Outcome {
-    Known = 1,
-    Unknown = 2
+export enum CardDowngradeMode {
+    ToFirstBox = 1,
+    OneBoxDown = 2
 }
 
 export interface Style {

@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { Card, CardPresentationMode, Outcome } from '../../types/types';
+import { Card, CardPresentationMode } from '../../types/types';
 
 import { SessionProvider } from '../../providers/session';
 
@@ -16,7 +16,18 @@ export class TrainPage {
     public animationClass: string = "";
     public animationTimeoutID: number = 0;
 
+    @ViewChild("trainingStats") trainingStats;
+    
     constructor(public navCtrl: NavController, public splashScreen: SplashScreen, public session: SessionProvider) {
+    }
+
+    updateStats(): void {
+        console.log("TrainPage.updateStats()");
+    
+        this.session.getCurrentCardStack().then((deck) => {
+            let sections: Array<number> = deck.map((box: Array<Card>) => box.length);
+            this.trainingStats.updateStats(sections);
+        });
     }
 
     nextCard(): void {
@@ -43,6 +54,7 @@ export class TrainPage {
             };
 
             this.currentCard = card; 
+            this.updateStats();
         });
     }
 
@@ -57,13 +69,9 @@ export class TrainPage {
         this.animationClass = '';
     }
 
-    animateNextCard(animationClass: string): void {
-        console.log("TrainPage.animateNextCard(\"" + animationClass + "\")");
+    recordOutcome(known: boolean) {
+        // console.log("TrainPage.recordOutcome()");
 
-        
-    }
-
-    recordOutcome(outcome: Outcome) {
         // Are we currently animating a slide out to either
         // side?
         if (this.animationClass == "slidingOutLeft" || this.animationClass == "slidingOutRight") {
@@ -77,16 +85,17 @@ export class TrainPage {
         } else {
             // No sliding-animation is active. So we can now record the
             // outcome on the current card.
-            this.session.recordOutcome(this.currentCard, outcome);
+            this.session.recordOutcome(this.currentCard, known);
             
             // And then animate the slide-out of the current card if so
             // requested in the settings.
             if (this.session.settings.animateCard) {
-                switch (outcome) {
-                    case Outcome.Known: this.animationClass = "slidingOutRight"; break;
-                    case Outcome.Unknown: this.animationClass = "slidingOutLeft"; break;
-                    default: console.warn("TrainPage.recordOutcome() - Unsupported outcome"); break;
+                if (known) {
+                    this.animationClass = "slidingOutRight"; 
+                } else {
+                    this.animationClass = "slidingOutLeft"; 
                 }
+
                 this.animationTimeoutID = setTimeout(() => {
                     this.cancelAnimation();
                     this.nextCard();
@@ -99,12 +108,12 @@ export class TrainPage {
 
     knowClick(event): void {
         // console.log("TrainPage.knowClick()");
-        this.recordOutcome(Outcome.Known);
+        this.recordOutcome(true);
     }
 
     dontKnowClick(event): void {
         // console.log("TrainPage.dontKnowClick()");
-        this.recordOutcome(Outcome.Unknown);
+        this.recordOutcome(false);
     }
 
     flipClick(event): void {

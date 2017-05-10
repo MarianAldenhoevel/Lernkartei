@@ -1,0 +1,30 @@
+training-stats {
+
+    div.box {
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    div.box_0 {
+        background: #30d05f;
+    }
+
+    div.box_1 {
+        background: #f53d3d;
+    }
+
+    div.box_2 {
+        background: gray;
+    }
+
+    div.box_prev {
+        float: left;   
+    }
+
+    div.box_last {
+        float: none;   
+    }
+
+}

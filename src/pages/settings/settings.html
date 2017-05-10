@@ -16,10 +16,27 @@
     </ion-item>
     <ion-item>
         <ion-label>{{ "CARD_PRESENTATION_MODE" | translate }}</ion-label>
-        <ion-select [ngModel]="session.settings.cardPresentationMode" (ngModelChange)="cardPresentationModeClick($event)">
+        <ion-select [ngModel]="session.settings.cardPresentationMode" (ngModelChange)="cardPresentationModeChange($event)">
             <ion-option value="1">{{ "CARD_PRESENTATION_MODE_FRONT_FIRST" | translate }}</ion-option>
             <ion-option value="2">{{ "CARD_PRESENTATION_MODE_BACK_FIRST" | translate }}</ion-option>
             <ion-option value="3">{{ "CARD_PRESENTATION_MODE_RANDOM_SIDE_FIRST" | translate }}</ion-option>
+        </ion-select>
+    </ion-item>
+    <ion-item>
+        <ion-label>{{ "NUMBER_OF_BOXES" | translate }}</ion-label>
+        <ion-select [ngModel]="session.settings.numberOfBoxes" (ngModelChange)="NumberOfBoxesChange($event)">
+            <ion-option value="2">2</ion-option>
+            <ion-option value="3">3</ion-option>
+            <ion-option value="4">4</ion-option>
+            <ion-option value="5">5</ion-option>
+            <ion-option value="6">6</ion-option>
+        </ion-select>
+    </ion-item>
+    <ion-item>
+        <ion-label>{{ "CARD_DOWNGRADE_MODE" | translate }}</ion-label>
+        <ion-select [ngModel]="session.settings.cardDowngradeMode" (ngModelChange)="cardDowngradeModeChange($event)">
+            <ion-option value="1">{{ "CARD_DOWNGRADE_MODE_TO_FIRST_BOX" | translate }}</ion-option>
+            <ion-option value="2">{{ "CARD_DOWNGRADE_MODE_ONE_BOX_DOWN" | translate }}</ion-option>
         </ion-select>
     </ion-item>
     <button ion-item (click)="backgroundStyleClick($event)">

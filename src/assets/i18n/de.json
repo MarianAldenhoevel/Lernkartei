@@ -30,5 +30,10 @@
     "CARD_PRESENTATION_MODE_RANDOM_SIDE_FIRST": "Zufällige Seite",
     "DROP_DB": "Datenbank löschen",
     "CONFIRM": "Bestätigung",
-    "CONFIRM_DROP_DB": "Wollen Sie die Datenbank wirklich löschen? Alle Daten gehen verloren und die App wird beendet!"
+    "CONFIRM_DROP_DB": "Wollen Sie die Datenbank wirklich löschen? Alle Daten gehen verloren und die App wird beendet!",
+    "NUMBER_OF_BOXES": "Anzahl Fächer",
+    "CARD_DOWNGRADE_MODE": "Nicht gewusste Karte",
+    "CARD_DOWNGRADE_MODE_TO_FIRST_BOX": "fällt in Fach 1",
+    "CARD_DOWNGRADE_MODE_ONE_BOX_DOWN": "fällt ein Fach zurück",
+    "CONFIRM_DELETE_DECK": "Kartenstapel wirklich löschen?"
 }

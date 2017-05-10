@@ -21,30 +21,61 @@ export class DBProvider {
         return true;
     }
 
+    private paramsToLog(params?: Array<any>): string {
+        // console.log("paramsToLog()");
+
+        let result: string = "[";
+
+        if (params) {
+            for(let i = 0; i<params.length; i++) {
+                if (i>0) {
+                    result +=", ";
+                }
+                let v = params[i];
+                
+                if (v === undefined) {
+                    result +="undefined";
+                } else if (v === null) {
+                    result +="null";
+                } else if (typeof v === 'string' || v instanceof String) {
+                    result += "\"" + v +"\"";
+                } else {
+                    result += v.toString();
+                }
+            }
+        }
+
+        result += "]";
+
+        return result;
+    }
+
     // Resolves to a SLQResult interface.
     runSQL(sql: string, params?: Array<any>): Promise<any> {
-        // console.log("DBProvider.runSQL(\"" + sql + "\") - [" + (params ? params.join(", ") : "") + "]");
+        console.log("DBProvider.runSQL(\"" + sql + "\") - " + this.paramsToLog(params));
 
         if (this.useWebSQL()) {
             let ops = new Promise<any>(resolve => {
-                // console.log("DBProvider.runSQL(\"" + sql + "\") - [" + (params ? params.join(", ") : "") + "] - transaction()"); 
+                // console.log("DBProvider.runSQL(\"" + sql + "\") - " + this.paramsToLog(params) + " - transaction()"); 
 
                 this.db.transaction(
                     (tx) => {
-                        // console.log("DBProvider.runSQL(\"" + sql + "\") - [" + (params ? params.join(", ") : "") + "] - executeSql()"); 
+                        // console.log("DBProvider.runSQL(\"" + sql + "\") - " + this.paramsToLog(params) + " - executeSql()"); 
 
                         tx.executeSql(sql, (params ? params : []), (tx, result) => {
-                            // console.log("DBProvider.runSQL(\"" + sql + "\") - [" + (params ? params.join(", ") : "") + "] - resolving executeSql result"); 
-
-                            resolve(result);
+                            // console.log("DBProvider.runSQL(\"" + sql + "\") - " + this.paramsToLog(params) + " - resolving executeSql result"); 
                             tx = null;
+                            resolve(result);
                         }, (tx, error) => {
-                            console.error(error.message + "\nSQL:\n" + sql + "\nParams: [" + (params ? params.join(", ") : "") + "]");
-                            throw error;
+                            console.error(error.message + "\nSQL:\n" + sql + "\nParams: " + this.paramsToLog(params));
+                            return false;
                         });
                     }
-                    , (error) => { throw error; }
-                    // , () => { console.log("DBProvider.runSQL(\"" + sql + "\") - [" + (params ? params.join(", ") : "") + "] - Transaction completed"); }
+                    , (error) => {
+                        console.error(error.message + "\nSQL:\n" + sql + "\nParams: " + this.paramsToLog(params));
+                        return false;
+                     }
+                    // , () => { console.log("DBProvider.runSQL(\"" + sql + "\") - " + this.paramsToLog(params) + " - Transaction completed"); }
                 )
             });
 
@@ -68,16 +99,22 @@ export class DBProvider {
         // console.log("DBProvider.runDML()");
 
         let ops = this.runSQL(sql, params);
-        ops = ops.then((result) => { return result.rowsAffected; });
+        ops = ops.then((result) => { 
+            console.log("DBProvider.runSELECT() - " + result.rowsAffected + " rows affected");
+            return result.rowsAffected; 
+        });
         return ops;
     }
 
     // Resolves to the last inserted ID.
     runINSERT(sql: string, params?: Array<any>): Promise<number> {
-        // console.log("DBProvider.runDML()");
+        // console.log("DBProvider.runINSERT()");
 
         let ops = this.runSQL(sql, params);
-        ops = ops.then((result) => { return result.insertId; });
+        ops = ops.then((result) => { 
+            console.log("DBProvider.runINSERT() - result.insertId=" + result.insertId);
+            return result.insertId; 
+        });
         return ops;
     }
 
@@ -92,6 +129,8 @@ export class DBProvider {
                 let row = result.rows.item(i);
                 rows.push(row);
             };
+
+            console.log("DBProvider.runSELECT() - " + rows.length + " rows returned");
 
             return rows;
         });
@@ -125,10 +164,11 @@ export class DBProvider {
 
         let deckId: number;
 
-        let ops: Promise<any> = this.runDML("INSERT INTO DECKS (name, active) VALUES (?,?)", [deckinfo.name, 1]);
-        ops = ops.then((insertId: number) => {
-            console.log("Deck inserted with id " + insertId.toString());
-            deckId = insertId;
+        let ops: Promise<any> = this.runDML("INSERT OR REPLACE INTO DECKS (name, active) VALUES (?,?)", [deckinfo.name, 1]);
+        ops = ops.then(() => this.runSELECT("SELECT id FROM DECKS WHERE name=?", [deckinfo.name]));
+        ops = ops.then((data: Array<any>) => {
+            deckId = data[0].id;
+            console.log("Deck inserted with id " + deckId.toString());            
         });
 
         // TODO: Find out what format the data is in and parse/interpret accordingly.
@@ -145,8 +185,8 @@ export class DBProvider {
     initDB(): Promise<void> {
         console.log("DBProvider.initDB()");
 
-        let ops = this.runDDL("CREATE TABLE IF NOT EXISTS DECKS (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, active INTEGER)");
-        ops = ops.then(() => this.runDDL("CREATE TABLE IF NOT EXISTS CARDS (id TEXT PRIMARY KEY, front TEXT, back TEXT)"));
+        let ops = this.runDDL("CREATE TABLE IF NOT EXISTS DECKS (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, active INTEGER, UNIQUE(name))");
+        ops = ops.then(() => this.runDDL("CREATE TABLE IF NOT EXISTS CARDS (id TEXT PRIMARY KEY, front TEXT, back TEXT, current_box INTEGER)"));
         ops = ops.then(() => this.runDDL("CREATE TABLE IF NOT EXISTS DECK_CARDS (deck_id INTEGER, card_id TEXT, CONSTRAINT unq_deck_card UNIQUE (deck_id, card_id))"));
         ops = ops.then(() => this.runDDL("CREATE TABLE IF NOT EXISTS SETTINGS (name TEXT PRIMARY KEY, value TEXT)"));
         
@@ -225,7 +265,7 @@ export class DBProvider {
         }
     }
 
-    getSetting(key: string): Promise<any> {
+    loadSetting(key: string): Promise<any> {
         console.log("DBProvider.getSetting(\"" + key + "\")");
 
         return this.openDB()
@@ -246,33 +286,73 @@ export class DBProvider {
             .then((db) => this.runDML("INSERT OR REPLACE INTO SETTINGS (name, value) VALUES (?,?)", [key, JSON.stringify(value, null, 4)]))
     }
 
-    getAllDecks(): Promise<Array<any>> {
+    loadAllDecks(): Promise<Array<any>> {
         console.log("DBProvider.getAllDecks()");
 
         // return this.allDecks;
         return this.openDB()
-            .then((db) => this.runSELECT("SELECT * FROM DECKS"));
+            .then((db) => this.runSELECT(
+                "SELECT " +
+                "  d.id, " +
+                "  d.name," +
+                "  d.active, " + 
+                "  COUNT(dc.card_id) AS card_count " +
+                "FROM DECKS d " +
+                "LEFT OUTER JOIN DECK_CARDS dc " +
+                "  ON (dc.deck_id = d.id) " +
+                "GROUP BY d.id, d.name, d.active"
+            ));
     }
 
     // Return an array of all cards in all decks that are marked active AND
     // match the deckFilter string.
-    getCurrentCardStack(deckFilter: string): Promise<Array<Card>> {
+    loadCurrentCardStack(deckFilter: string): Promise<Array<Card>> {
         console.log("DBProvider.getCurrentCardStack()");
 
-        return Promise.resolve([]);
-    }
+        let params = [];
+        let q: string = "SELECT c.* FROM CARDS c " +
+                "INNER JOIN DECK_CARDS dc " +
+                "   ON (dc.card_id = c.id) " +
+                "INNER JOIN DECKS d " +
+                "   ON (d.id = dc.deck_id) " +
+                "       AND (d.active) ";
+        if (deckFilter) {
+            q += "       AND (d.name LIKE ?)";
+            params.push(deckFilter); 
+        } 
 
-    getNextCard(): Promise<Card|void> {
-        console.log("DBProvider.getNextCard()");
-        
         return this.openDB()
-            .then(() => { return { "id": "XXX", "front": "Vorne", "back": "Hinten" }; } );
+            .then((db) => this.runSELECT(q, params));
     }
 
     updateDeck(deck: Deck): Promise<number> {
         console.log("DBProvider.updateDeck(\"" + deck.name + "\")");
         
-        return this.runDML("UPDATE DECKS SET name = ?, active = ? WHERE (id = ?)", [deck.name, deck.active, deck.id]);
+        return this.runDML("UPDATE DECKS SET name = ?, active = ? WHERE (id = ?)", [deck.name, deck.active ? 1 : 0, deck.id]);
+    }
+
+    deleteDeck(deck: Deck): Promise<number> {
+        console.log("DBProvider.deleteDeck(\"" + deck.name + "\")");
+        
+        let ops: Promise<any> = this.runDML("DELETE FROM DECK_CARDS WHERE (deck_id = ?)", [deck.id]);
+        ops = ops.then(() => this.runDML("DELETE FROM DECKS WHERE (id = ?)", [deck.id]));
+        ops = ops.then(() => this.runDML(
+            "DELETE FROM CARDS " +
+            "WHERE id IN ( " +
+            "  SELECT id " +
+            "  FROM CARDS c " +
+            "  LEFT OUTER JOIN DECK_CARDS dc " +
+            "    ON (dc.card_id = c.id) " +
+            "  WHERE (dc.card_id IS NULL) " +
+            "  )"));
+
+        return ops;
+    }
+
+    updateCard(card: Card): Promise<number> {
+        console.log("DBProvider.updateCard(\"" + card.id + "\")");
+        
+        return this.runDML("UPDATE CARDS SET current_box = ? WHERE (id = ?)", [card.current_box, card.id]);
     }
 
 } // of class

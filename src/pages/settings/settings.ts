@@ -80,10 +80,23 @@ export class SettingsPage {
         modal.present();
     }
 
-    cardPresentationModeClick(event): void {
-        console.log("SettingsPage.cardPresentationModeClick()");
+    cardPresentationModeChange(event): void {
+        console.log("SettingsPage.cardPresentationModeChange()");
 
         this.session.settings.cardPresentationMode = parseInt(event);
+    }
+
+    numberOfBoxesChange(event): void {
+        console.log("SettingsPage.numberOfBoxesChange()");
+
+        this.session.settings.numberOfBoxes = parseInt(event);
+        this.session.invalidateCurrentCardStack();
+    }
+
+    cardDowngradeModeChange(event): void {
+        console.log("SettingsPage.cardDowngradeModeChange()");
+
+        this.session.settings.cardDowngradeMode = parseInt(event);
     }
 
     animateCardClick(event): void {

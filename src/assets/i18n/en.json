@@ -30,5 +30,9 @@
     "CARD_PRESENTATION_MODE_RANDOM_SIDE_FIRST": "Random face first",
     "DROP_DB": "Drop DB",
     "CONFIRM": "Confirm",
-    "CONFIRM_DROP_DB": "Do you really want to drop the DB? All data will be lost and the app will be closed!"
+    "CONFIRM_DROP_DB": "Do you really want to drop the DB? All data will be lost and the app will be closed!",
+    "NUMBER_OF_BOXES": "Number of boxes",
+    "CARD_DOWNGRADE_MODE": "Unknown card",
+    "CARD_DOWNGRADE_MODE_TO_FIRST_BOX": "drops to first box",
+    "CONFIRM_DELETE_DECK": "Do you really want to delete this deck"
 }

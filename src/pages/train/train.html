@@ -6,9 +6,12 @@
 
 <ion-header no-border>
     <ion-toolbar>
+        <training-stats #trainingStats></training-stats>
+        <!--
         <div class="statspanel know">7</div>
         <div class="statspanel dontknow">10</div>
         <div class="statspanel neutral">20</div>
+        -->
     </ion-toolbar>
 </ion-header>
 
@@ -31,10 +34,10 @@
                 </ion-note>
             </h2>
             <hr />
-            <div class="content" *ngIf="flipped">
+            <div class="content" *ngIf="!flipped">
                 {{currentCard.front}}
             </div>
-            <div class="content" *ngIf="!flipped">
+            <div class="content" *ngIf="flipped">
                 {{currentCard.back}}
             </div>
         </ion-card-content>

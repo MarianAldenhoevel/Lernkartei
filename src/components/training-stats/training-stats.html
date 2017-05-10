@@ -1,0 +1,14 @@
+<div *ngFor="let box of boxes; let i=index; let isLast=last" 
+    [ngClass]='{
+            "box":      (true),
+            "box_0":    (i==0),
+            "box_1":    (i==1),
+            "box_2":    (i==2),
+            "box_3":    (i==3),
+            "box_4":    (i==4),
+            "box_5":    (i==5),
+            "box_last": (isLast), 
+            "box_prev": (!isLast)
+        }' 
+    [style.width]="this.Math.floor(100*box/sum) + '%'"
+>{{box}}</div>

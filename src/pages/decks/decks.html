@@ -17,8 +17,9 @@
             <ion-checkbox item-left [checked]="deck.active" (click)="toggleDeck($event,deck)"></ion-checkbox>
             <ion-label>
                 <h2>{{deck.name}}</h2>
-                <p>{{deck.count}} {{ "CARDS" | translate }}</p>
+                <p>{{deck.card_count}} {{ "CARDS" | translate }}</p>
             </ion-label>
+            <ion-icon name="trash" item-right color="dark" (click)="deleteDeck($event,deck)"></ion-icon>   
         </ion-item>
     </ion-list>
 </ion-content>
