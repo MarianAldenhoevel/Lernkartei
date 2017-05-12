@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 
-import { ImportDeckPage } from '../import-deck/import-deck';
+import { FileChooser } from '@ionic-native/file-chooser';
 
 import { Deck } from '../../types/types';
 import { SessionProvider } from '../../providers/session';
@@ -19,7 +19,8 @@ export class DecksPage {
         public navCtrl: NavController, 
         private alertCtrl: AlertController,
         public session: SessionProvider,
-        public translate: TranslateService
+        public translate: TranslateService,
+        public fileChooser: FileChooser
     ) {
         this.getDecks();
     }
@@ -27,7 +28,7 @@ export class DecksPage {
     getDecks() {
         // console.log("DecksPage.getDecks()");
 
-        this.session.getFilteredDecks().then((decks) => { this.decks = decks; });
+        this.session.getFilteredDecks().then(decks => { this.decks = decks; });
     }
 
     filterDecks(searchbar) {
@@ -64,7 +65,7 @@ export class DecksPage {
                         // console.log("DecksPage.deleteDeck() - confirmed");
 
                         this.session.deleteDeck(deck);   
-                        this.decks = this.decks.filter((_deck) => (deck.id !== _deck.id));                
+                        this.decks = this.decks.filter(_deck => { deck.id !== _deck.id; } );                
                     }
                 }
             ]
@@ -73,10 +74,12 @@ export class DecksPage {
         confirm.present();
     }
 
-    importDeck(event) {
-        // console.log("DecksPage.importDeck()");
+    importDeckFromFile(event) {
+        console.log("DecksPage.importDeckFromFile()");
 
-        this.navCtrl.push(ImportDeckPage);
+        this.fileChooser.open()
+            .then(uri => this.session.importDeck(uri))
+            .then(() => this.getDecks());
     }
 
 }

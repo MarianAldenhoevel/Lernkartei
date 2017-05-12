@@ -138,7 +138,7 @@ export class DBProvider {
         return ops;
     }
 
-    readWebFile(url: string): Promise<any> {
+    openDeckFile(url: string): Promise<any> {
         // console.log("DBProvider.readWebFile(\"" + url + "\")");
 
         return new Promise<any>(resolve => {
@@ -193,11 +193,11 @@ export class DBProvider {
         
         ops = ops.then(() => this.runDDL("CREATE INDEX IF NOT EXISTS IX_SESSIONS_finished ON SESSIONS (finished)"));
         
-        ops = ops.then(() => this.readWebFile("assets/decks/Einmaleins.json"));
-        ops = ops.then((content) => this.importDeck(content));
+        ops = ops.then(() => this.openDeckFile("assets/decks/Einmaleins.json"));
+        ops = ops.then(content => this.importDeck(content));
         
-        ops = ops.then(() => this.readWebFile("assets/decks/Hauptstädte der Welt.json"));
-        ops = ops.then((content) => this.importDeck(content));
+        ops = ops.then(() => this.openDeckFile("assets/decks/Hauptstädte der Welt.json"));
+        ops = ops.then(content => this.importDeck(content));
 
         return ops;
     }
@@ -378,5 +378,5 @@ export class DBProvider {
             ]
         );
     }
-
+    
 } // of class

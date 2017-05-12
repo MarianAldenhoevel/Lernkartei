@@ -63,16 +63,16 @@ export class SessionProvider {
         this.filteredDecks = null;
 
         // Fulfill the promises on AppVersion by assigning to local properties
-        _appVersion.getAppName().then((s) => { this.appVersion.appName = s }).catch((err) => { });
-        _appVersion.getPackageName().then((s) => { this.appVersion.packageName = s }).catch((err) => { });
-        _appVersion.getVersionCode().then((s) => { this.appVersion.versionCode = s }).catch((err) => { });
-        _appVersion.getVersionNumber().then((s) => { this.appVersion.versionNumber = s }).catch((err) => { });
+        _appVersion.getAppName().then(s => { this.appVersion.appName = s }).catch(err => { });
+        _appVersion.getPackageName().then(s => { this.appVersion.packageName = s }).catch(err => { });
+        _appVersion.getVersionCode().then(s => { this.appVersion.versionCode = s }).catch(err => { });
+        _appVersion.getVersionNumber().then(s => { this.appVersion.versionNumber = s }).catch(err => { });
     }
 
     loadSettings(): void {
         // console.log("SessionProvider.loadSettings()");
 
-        this.db.loadSetting("settings").then((value) => {
+        this.db.loadSetting("settings").then(value => {
             // console.log("SessionProvider.loadSettings() - loaded");
             Object.assign(this.settings, value);
         });
@@ -107,7 +107,7 @@ export class SessionProvider {
         } else {
             // Instruct DB to load the complete set, store locally and resolve to it.
             return new Promise(resolve => {
-                this.db.loadAllDecks().then((decks) => {
+                this.db.loadAllDecks().then(decks => {
                     this.allDecks = decks;
                     resolve(this.allDecks)
                 });
@@ -124,7 +124,7 @@ export class SessionProvider {
         } else {
             // Create new filtered set and resolve to it.
             return new Promise(resolve => {
-                this.getAllDecks().then((allDecks) => {
+                this.getAllDecks().then(allDecks => {
                     if (!this.deckFilter) {
                         // No filtering requested.
                         this.filteredDecks = allDecks;
@@ -157,7 +157,7 @@ export class SessionProvider {
             return new Promise(resolve => {
                 // console.log("SessionProvider.getCurrentCardStack() - load");
 
-                this.db.loadCurrentCardStack(this.deckFilter).then((currentCardStack) => {
+                this.db.loadCurrentCardStack(this.deckFilter).then(currentCardStack => {
                     // We want the cards to be sorted into boxes.
                     this.currentCardStackInBoxes = [];
                     for (let box: number = 0; box < this.settings.numberOfBoxes; box++) {
@@ -217,8 +217,8 @@ export class SessionProvider {
 
         this.db.deleteDeck(deck);
         this.invalidateCurrentCardStack();
-        this.allDecks = this.allDecks.filter((_deck) => _deck.id !== deck.id);
-        this.filteredDecks = this.filteredDecks.filter((_deck) => _deck.id !== deck.id);
+        this.allDecks = this.allDecks.filter(_deck => { _deck.id !== deck.id; } );
+        this.filteredDecks = this.filteredDecks.filter(_deck => { _deck.id !== deck.id; });
     }
 
     startSession() {
@@ -398,6 +398,16 @@ export class SessionProvider {
             }
 
         });
+    }
+
+    importDeck(uri: string): Promise<any> {
+        return this.db.openDeckFile(uri)
+            .then(content => this.db.importDeck(content))
+            .then(() => {
+                this.filteredDecks = null;
+                this.allDecks = null;
+            })
+            .catch(e => { console.log(e); } );
     }
 
 } // of class

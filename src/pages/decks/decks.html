@@ -9,9 +9,9 @@
 <ion-content padding>
     <ion-searchbar (ionInput)="filterDecks($event)"></ion-searchbar>
     <ion-list>
-        <ion-item (click)="importDeck($event)">
+        <ion-item (click)="importDeckFromFile($event)">
             <ion-icon name="add" item-left></ion-icon>
-            <h2>{{ "IMPORT_NEW_DECK" | translate }}</h2>
+            <h2>{{ "IMPORT_DECK_FROM_FILE" | translate }}</h2>
         </ion-item>
         <ion-item *ngFor="let deck of decks">
             <ion-checkbox item-left [checked]="deck.active" (click)="toggleDeck($event,deck)"></ion-checkbox>

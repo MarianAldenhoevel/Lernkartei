@@ -11,6 +11,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Device } from '@ionic-native/device';
 import { AppVersion } from '@ionic-native/app-version';
 import { SQLite } from '@ionic-native/sqlite';
+import { FileChooser } from '@ionic-native/file-chooser';
 
 // import { ColorPicker } from '../components/color-picker-palette/color-picker-palette';
 import { ColorPicker } from '../components/color-picker-sliders/color-picker-sliders';
@@ -24,7 +25,6 @@ import { StatsPage } from '../pages/stats/stats';
 import { DecksPage } from '../pages/decks/decks';
 import { SettingsPage } from '../pages/settings/settings';
 import { AboutPage } from '../pages/about/about';
-import { ImportDeckPage } from '../pages/import-deck/import-deck';
 
 import { SessionProvider } from '../providers/session';
 import { DBProvider } from '../providers/db';
@@ -40,8 +40,7 @@ import { DBProvider } from '../providers/db';
         StatsPage,
         DecksPage,
         SettingsPage,
-        AboutPage,
-        ImportDeckPage
+        AboutPage
     ],
     imports: [
         BrowserModule,
@@ -63,8 +62,7 @@ import { DBProvider } from '../providers/db';
         StatsPage,
         DecksPage,
         SettingsPage,
-        AboutPage,
-        ImportDeckPage
+        AboutPage
     ],
     providers: [
         StatusBar,
@@ -75,6 +73,7 @@ import { DBProvider } from '../providers/db';
         SessionProvider,
         DBProvider,
         SQLite,
+        FileChooser,
         { provide: ErrorHandler, useClass: IonicErrorHandler }
     ]
 })
