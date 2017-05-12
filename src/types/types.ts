@@ -7,9 +7,29 @@ export interface Deck {
 
 export interface Card {
     "id": string,
+    "deck": string,
     "front": string,
     "back": string,
     "current_box": number
+}
+
+export interface Box {
+    "presented": Array<Card>,
+    "unpresented": Array<Card>
+}
+
+export interface Session {
+    "started": Date,
+    "finished": Date,
+    "cards_known": number,
+    "cards_unknown": number
+}
+
+export interface SessionInfo {
+    "ago": string,
+    "duration": string,
+    "cards_known": number,
+    "cards_unknown": number
 }
 
 export enum CardPresentationMode {

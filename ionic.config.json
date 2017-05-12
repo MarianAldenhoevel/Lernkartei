@@ -1,6 +1,5 @@
 {
   "name": "Lernkartei",
   "app_id": "249b3567",
-  "v2": true,
-  "typescript": true
+  "type": "ionic-angular"
 }

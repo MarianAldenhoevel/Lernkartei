@@ -1,30 +1,132 @@
 training-stats {
 
+    $box-padding: 0.5em;
+    $box-border: 1px solid black;
+        
+    div.boxes {
+        border: $box-border;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+    }
+
     div.box {
-        padding-top: 0.5em;
-        padding-bottom: 0.5em;
+        position: relative;
+        padding-top: $box-padding;
+        padding-bottom: $box-padding;
         text-align: center;
         overflow: hidden;
     }
 
-    div.box_0 {
-        background: #30d05f;
-    }
-
-    div.box_1 {
-        background: #f53d3d;
-    }
-
-    div.box_2 {
-        background: gray;
-    }
-
-    div.box_prev {
-        float: left;   
+    div.box_left {
+        float: left;
+        border-right: $box-border;
     }
 
     div.box_last {
-        float: none;   
+        float: none;
+    }
+
+    div.cards {
+        position: absolute;
+        white-space: nowrap;
+        padding-left: 3px;
+        padding-right: 3px;
+        padding-top: $box-padding;
+        padding-bottom: $box-padding;
+        left: 0;
+        top: 0;
+        height: 100%;
+    }
+
+
+    // Set of two
+    div.cards_3_0 {
+        background-color: #ff0000;
+    }
+
+    div.cards_3_2 {
+        background-color: green;       
+    }
+
+
+    // Set of three
+    div.cards_3_0 {
+        background-color: #ff0000;
+    }
+
+    div.cards_3_1 {
+        background-color: yellow; 
+    }
+
+    div.cards_3_2 {
+        background-color: #00ff00;       
+    }
+
+
+    // Set of four
+    div.cards_4_0 {
+        background-color: #ff0000;
+    }
+
+    div.cards_4_1 {
+        background-color: orange;        
+    }
+
+    div.cards_4_2 {
+        background-color: yellow; 
+    }
+
+    div.cards_4_3 {
+        background-color: #00ff00;       
+    }
+
+
+    // Set of five
+    div.cards_5_0 {
+        background-color: #ff0000;
+    }
+
+    div.cards_5_1 {
+        background-color: orange;        
+    }
+
+    div.cards_5_2 {
+        background-color: yellow; 
+    }
+
+    div.cards_5_3 {
+        background-color: green;       
+    }
+
+    div.cards_5_4 {
+        background-color: #00ff00;
+    }
+
+
+    // Set of six
+    div.cards_6_0 {
+        background-color: #ff0000;
+    }
+
+    div.cards_6_1 {
+        background-color: #bb7700;        
+    }
+
+    div.cards_6_2 {
+        background-color: orange;        
+    }
+
+    div.cards_6_3 {
+        background-color: yellow; 
+    }
+
+    div.cards_6_4 {
+        background-color: green;       
+    }
+
+    div.cards_6_5 {
+        background-color: #00ff00;
     }
 
 }

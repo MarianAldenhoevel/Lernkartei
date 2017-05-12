@@ -25,27 +25,27 @@ export class DecksPage {
     }
 
     getDecks() {
-        console.log("DecksPage.getDecks()");
+        // console.log("DecksPage.getDecks()");
 
         this.session.getFilteredDecks().then((decks) => { this.decks = decks; });
     }
 
     filterDecks(searchbar) {
         let deckFilter: string = searchbar.srcElement.value;
-        console.log("DecksPage.filterDecks(\"" + deckFilter + "\")");
+        // console.log("DecksPage.filterDecks(\"" + deckFilter + "\")");
 
         this.session.setDeckFilter(deckFilter);
         this.getDecks();
     }
 
     toggleDeck(event, deck: Deck) {
-        console.log("DecksPage.toggleDeck(\"" + deck.name + "\")");
+        // console.log("DecksPage.toggleDeck(\"" + deck.name + "\")");
 
         this.session.toggleDeck(deck);
     }
 
     deleteDeck(event, deck: Deck) {
-        console.log("DecksPage.deleteDeck(\"" + deck.name + "\")");
+        // console.log("DecksPage.deleteDeck(\"" + deck.name + "\")");
 
         let confirm = this.alertCtrl.create({
             "title": this.translate.instant("CONFIRM"),
@@ -55,13 +55,13 @@ export class DecksPage {
                     text: this.translate.instant("NO"),
                     role: 'cancel',
                     handler: () => {
-                        console.log("DecksPage.deleteDeck() - cancelled");    
+                        // console.log("DecksPage.deleteDeck() - cancelled");    
                     }
                 },
                 {
                     text: this.translate.instant("YES"),
                     handler: () => {
-                        console.log("DecksPage.deleteDeck() - confirmed");
+                        // console.log("DecksPage.deleteDeck() - confirmed");
 
                         this.session.deleteDeck(deck);   
                         this.decks = this.decks.filter((_deck) => (deck.id !== _deck.id));                
@@ -74,7 +74,7 @@ export class DecksPage {
     }
 
     importDeck(event) {
-        console.log("DecksPage.importDeck()");
+        // console.log("DecksPage.importDeck()");
 
         this.navCtrl.push(ImportDeckPage);
     }

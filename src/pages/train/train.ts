@@ -1,8 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, AlertController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { Card, CardPresentationMode } from '../../types/types';
+import { Card, CardPresentationMode, Box } from '../../types/types';
+
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { SessionProvider } from '../../providers/session';
 
@@ -17,33 +19,38 @@ export class TrainPage {
     public animationTimeoutID: number = 0;
 
     @ViewChild("trainingStats") trainingStats;
-    
-    constructor(public navCtrl: NavController, public splashScreen: SplashScreen, public session: SessionProvider) {
+
+    constructor(
+        public navCtrl: NavController,
+        private alertCtrl: AlertController,
+        public splashScreen: SplashScreen,
+        public translate: TranslateService,
+        public session: SessionProvider) {
     }
 
     updateStats(): void {
-        console.log("TrainPage.updateStats()");
-    
+        // console.log("TrainPage.updateStats()");
+
         this.session.getCurrentCardStack().then((deck) => {
-            let sections: Array<number> = deck.map((box: Array<Card>) => box.length);
+            let sections: Array<number> = deck.map((box: Box) => box.unpresented.length + box.presented.length);
             this.trainingStats.updateStats(sections);
         });
     }
 
     nextCard(): void {
-        console.log("TrainPage.nextCard()");
+        // console.log("TrainPage.nextCard()");
 
-        this.session.getNextCard().then((card) => { 
+        this.session.getNextCard().then((card) => {
             switch (this.session.settings.cardPresentationMode) {
-                case CardPresentationMode.FrontFirst: 
+                case CardPresentationMode.FrontFirst:
                     // console.log("TrainPage.nextCard() - Present front face");
                     this.flipped = false;
                     break;
-                case CardPresentationMode.BackFirst: 
+                case CardPresentationMode.BackFirst:
                     // console.log("TrainPage.nextCard() - Present back face");
                     this.flipped = true;
                     break;
-                case CardPresentationMode.RandomSideFirst: 
+                case CardPresentationMode.RandomSideFirst:
                     // console.log("TrainPage.nextCard() - Present random face");
                     this.flipped = (Math.random() >= 0.5);
                     break;
@@ -53,8 +60,50 @@ export class TrainPage {
                     break;
             };
 
-            this.currentCard = card; 
+            // Present the card that was picked. 
+            this.currentCard = card;
             this.updateStats();
+
+            if (card == null) {
+                console.log("TrainPage.nextCard() - No card picked");
+
+                // No card was picked. There are two ways this can happen:
+                // 1) There are none in the active stack
+                // 2) All cards have been presented in this session
+                if (this.session.hasCards()) {
+                    let alert = this.alertCtrl.create({
+                        "title": this.translate.instant("ALERT"),
+                        "message": this.translate.instant("ALERT_NEW_SESSION"),
+                        "buttons": [
+                            {
+                                text: this.translate.instant("OK"),
+                                handler: () => {
+                                    console.log("TrainPage.nextCard() - New session OK");
+                                    this.session.invalidateCurrentCardStack();
+                                    this.nextCard();
+                                }
+                            }
+                        ]
+                    });
+
+                    alert.present();
+                } else {
+                    let alert = this.alertCtrl.create({
+                        "title": this.translate.instant("ALERT"),
+                        "message": this.translate.instant("ALERT_NO_CARDS"),
+                        "buttons": [
+                            {
+                                text: this.translate.instant("OK"),
+                                handler: () => {
+                                    console.log("TrainPage.nextCard() - No cards OK");
+                                }
+                            }
+                        ]
+                    });
+
+                    alert.present();
+                }
+            }
         });
     }
 
@@ -72,6 +121,11 @@ export class TrainPage {
     recordOutcome(known: boolean) {
         // console.log("TrainPage.recordOutcome()");
 
+        if (!this.session.currentSession.started) {
+            this.session.startSession();
+        }
+        this.session.currentSession.finished = new Date();
+
         // Are we currently animating a slide out to either
         // side?
         if (this.animationClass == "slidingOutLeft" || this.animationClass == "slidingOutRight") {
@@ -86,14 +140,14 @@ export class TrainPage {
             // No sliding-animation is active. So we can now record the
             // outcome on the current card.
             this.session.recordOutcome(this.currentCard, known);
-            
+
             // And then animate the slide-out of the current card if so
             // requested in the settings.
             if (this.session.settings.animateCard) {
                 if (known) {
-                    this.animationClass = "slidingOutRight"; 
+                    this.animationClass = "slidingOutRight";
                 } else {
-                    this.animationClass = "slidingOutLeft"; 
+                    this.animationClass = "slidingOutLeft";
                 }
 
                 this.animationTimeoutID = setTimeout(() => {
@@ -128,7 +182,7 @@ export class TrainPage {
                 // another flip and expects the card to appear unflipped. Duh.
                 // So only flip if we are on the flip-in
                 if (this.animationClass == "flippingIn") {
-                    this.flipped = !this.flipped; 
+                    this.flipped = !this.flipped;
                 }
                 this.cancelAnimation();
             } else {
@@ -151,37 +205,43 @@ export class TrainPage {
     }
 
     ionViewDidLoad(): void {
-        console.log("TrainPage.ionViewDidLoad()");
+        // console.log("TrainPage.ionViewDidLoad()");
 
-        this.nextCard();
         this.splashScreen.hide();
     }
 
-    /*
-        ionViewDidEnter(): void {
-            console.log("TrainPage.ionViewDidEnter()");
+    ionViewDidEnter(): void {
+        // console.log("TrainPage.ionViewDidEnter()");
+
+        if (!this.session.currentSession.started) {
+            this.session.startSession();
         }
-    
+
+        this.nextCard();
+    }
+
+    ionViewWillLeave(): void {
+        // console.log("TrainPage.ionViewWillLeave()");
+        
+        if (this.session.currentSession.finished) {
+            this.session.saveSession();
+        }
+    }
+
+    /*
         ionViewCanEnter(): boolean {
             console.log("TrainPage.ionViewCanEnter()");
             return true;
         }
     
-        ionViewWillEnter(): void {
-            console.log("TrainPage.ionViewWillLoad()");
-        }
-    
-        ionViewCanLeave(): boolean {
-            console.log("TrainPage.ionViewCanLeave()");
-            return true;
-        }
-    
-        ionViewWillLeave(): void {
-            console.log("TrainPage.ionViewWillLeave()");
-        }
-    
         ionViewDidLeave(): void {
             console.log("TrainPage.ionViewDidLeave()");
+
+            this.session.endSession();
+        }
+
+        ionViewWillEnter(): void {
+            console.log("TrainPage.ionViewWillLoad()");
         }
     
         ionViewWillUnload(): void {

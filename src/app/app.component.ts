@@ -26,25 +26,24 @@ export class LernkarteiApp {
         session: SessionProvider, 
         db: DBProvider) {
         
-        console.log("LernkarteApp.constructor()");
+        // console.log("LernkarteApp.constructor()");
 
         platform.ready().then(() => {
-            console.log("LernkarteApp.constructor().ready()");
+            // console.log("LernkarteApp.constructor().ready()");
 
             db.openDB().then(() => session.loadSettings());
 
             // Set up translation-system
             translate.setDefaultLang('en');
 
-            console.log("navigator.language=\"" + navigator.language + "\"");
+            // console.log("navigator.language=\"" + navigator.language + "\"");
             var userLang = navigator.language.split('-')[0];
             userLang = /(de|en)/gi.test(userLang) ? userLang : 'en';
-            console.log("User language detected as \"" + userLang + "\"");
+            // console.log("User language detected as \"" + userLang + "\"");
             translate.use(userLang);
             translate.use('de');
 
             statusBar.styleDefault();
-            // splashScreen.hide();
         });
     }
 }

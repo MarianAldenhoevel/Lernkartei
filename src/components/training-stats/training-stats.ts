@@ -19,13 +19,8 @@ export class TrainingStats {
         this.Math = Math;
     }
     
-    public ngOnInit() {
-        console.log("TrainingState().ngOnInit()");
-    }
-
     public updateStats(boxes: Array<number>) {
-        console.log("TrainingState().updateStats()");
-        console.log(JSON.stringify(boxes, null, 4));
+        // console.log("TrainingState().updateStats(" + JSON.stringify(boxes, null, 4) + ")");
 
         this.boxes = boxes;
         this.sum = boxes.reduce((acc, val) => (acc + val), 0);

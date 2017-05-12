@@ -24,7 +24,7 @@
     </ion-item>
     <ion-item>
         <ion-label>{{ "NUMBER_OF_BOXES" | translate }}</ion-label>
-        <ion-select [ngModel]="session.settings.numberOfBoxes" (ngModelChange)="NumberOfBoxesChange($event)">
+        <ion-select [ngModel]="session.settings.numberOfBoxes" (ngModelChange)="numberOfBoxesChange($event)">
             <ion-option value="2">2</ion-option>
             <ion-option value="3">3</ion-option>
             <ion-option value="4">4</ion-option>

@@ -1,14 +1,41 @@
-<div *ngFor="let box of boxes; let i=index; let isLast=last" 
-    [ngClass]='{
+<div class="boxes">
+    <div *ngFor="let box of boxes; let i=index; let isLast=last" 
+        [ngClass]='{
             "box":      (true),
-            "box_0":    (i==0),
-            "box_1":    (i==1),
-            "box_2":    (i==2),
-            "box_3":    (i==3),
-            "box_4":    (i==4),
-            "box_5":    (i==5),
-            "box_last": (isLast), 
-            "box_prev": (!isLast)
+            "box_left": (!isLast),
+            "box_last": (isLast)
         }' 
-    [style.width]="this.Math.floor(100*box/sum) + '%'"
->{{box}}</div>
+    [style.width]="this.Math.floor(100/boxes.length) + '%'">
+        <div *ngIf="(box)" 
+            [ngClass]='{
+                "cards":      (true),
+                
+                "cards_2_0":  (boxes.length==2 && i==0),
+                "cards_2_1":  (boxes.length==2 && i==1),
+                
+                "cards_3_0":  (boxes.length==3 && i==0),
+                "cards_3_1":  (boxes.length==3 && i==1),
+                "cards_3_2":  (boxes.length==3 && i==2),
+                
+                "cards_4_0":  (boxes.length==4 && i==0),
+                "cards_4_1":  (boxes.length==4 && i==1),
+                "cards_4_2":  (boxes.length==4 && i==2),
+                "cards_4_3":  (boxes.length==4 && i==3),
+                
+                "cards_5_0":  (boxes.length==5 && i==0),
+                "cards_5_1":  (boxes.length==5 && i==1),
+                "cards_5_2":  (boxes.length==5 && i==2),
+                "cards_5_3":  (boxes.length==5 && i==3),
+                "cards_5_4":  (boxes.length==5 && i==4),
+
+                "cards_6_0":  (boxes.length==6 && i==0),
+                "cards_6_1":  (boxes.length==6 && i==1),
+                "cards_6_2":  (boxes.length==6 && i==2),
+                "cards_6_3":  (boxes.length==6 && i==3),
+                "cards_6_4":  (boxes.length==6 && i==4),
+                "cards_6_5":  (boxes.length==6 && i==5)
+            }' 
+        [style.width]="this.Math.floor(100*box/sum) + '%'">
+            {{box}}
+        </div>&nbsp;
+</div>

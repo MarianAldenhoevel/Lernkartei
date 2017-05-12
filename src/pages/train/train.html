@@ -6,40 +6,47 @@
 
 <ion-header no-border>
     <ion-toolbar>
-        <training-stats #trainingStats></training-stats>
-        <!--
-        <div class="statspanel know">7</div>
-        <div class="statspanel dontknow">10</div>
-        <div class="statspanel neutral">20</div>
-        -->
+        <training-stats #trainingStats></training-stats>    
     </ion-toolbar>
 </ion-header>
 
+<!--
+<ion-header no-border>
+    <ion-toolbar>
+        <div class="boxes">
+            <div class="box box_left">
+                <div class="cards cards_0">52</div>&nbsp;
+            </div>
+            <div class="box box_left">
+                <div class="cards cards_1">100</div>&nbsp;
+            </div>
+            <div class="box box_last">
+                <div class="cards cards_2">58</div>&nbsp;
+            </div>
+        </div>
+    </ion-toolbar>
+</ion-header>
+-->
+
 <ion-content padding [style.backgroundColor]="session.settings.background">
-    <ion-card 
-        *ngIf="currentCard"
-        [ngClass]='{
+    <ion-card *ngIf="currentCard" [ngClass]='{
             "slidingOutRight": (animationClass=="slidingOutRight"),
             "slidingOutLeft": (animationClass=="slidingOutLeft"),
             "flippingOut": (animationClass=="flippingOut"), 
             "flippingIn": (animationClass=="flippingIn")
-        }' 
-        [style.backgroundColor]="flipped ? session.settings.card.back.backgroundColor : session.settings.card.front.backgroundColor"
+        }' [style.backgroundColor]="flipped ? session.settings.card.back.backgroundColor : session.settings.card.front.backgroundColor"
         [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color">
         <ion-card-content>
-            <h2>
-                Name of Deck
-                <ion-note item-right [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color">
-                    8/37
-                </ion-note>
-            </h2>
+            <div>
+                {{currentCard.deck}}
+            </div>
             <hr />
-            <div class="content" *ngIf="!flipped">
+            <h2 class="content" *ngIf="!flipped">
                 {{currentCard.front}}
-            </div>
-            <div class="content" *ngIf="flipped">
+            </h2>
+            <h2 class="content" *ngIf="flipped">
                 {{currentCard.back}}
-            </div>
+            </h2>
         </ion-card-content>
     </ion-card>
 </ion-content>
