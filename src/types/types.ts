@@ -18,6 +18,11 @@ export interface Box {
     "unpresented": Array<Card>
 }
 
+export interface StackImport {
+    "name": string,
+    "data": any
+}
+
 export interface Session {
     "started": Date,
     "finished": Date,

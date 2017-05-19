@@ -5,7 +5,9 @@ import { SQLite } from "@ionic-native/sqlite";
 
 import * as jQuery from "jquery";
 
-import { Deck, Card, Session } from "../types/types";
+import { Md5 } from 'ts-md5/dist/md5';
+
+import { Deck, Card, StackImport, Session } from "../types/types";
 
 @Injectable()
 export class DBProvider {
@@ -64,7 +66,7 @@ export class DBProvider {
     // Resolves to a SLQResult interface which can include last inserted ID,
     // rows affected and row-data returned.
     runSQL(sql: string, params?: Array<any>): Promise<any> {
-        // console.log("DBProvider.runSQL(\"" + sql + "\") - " + this.paramsToLog(params));
+        console.log("DBProvider.runSQL(\"" + sql + "\") - " + this.paramsToLog(params));
 
         if (this.useWebSQL()) {
             let ops = new Promise<any>(resolve => {
@@ -148,7 +150,9 @@ export class DBProvider {
             });
     }
 
-    openDeckFromUri(uri: string): Promise<any> {
+    // Open a deck from an URI to import it. Promise that resolves to an object including
+    // meta-data for the stack and the data from the file to be parsed by importDeck().
+    openDeckFromUri(uri: string): Promise<StackImport> {
         // console.log("DBProvider.readWebFile(\"" + url + "\")");
 
         return new Promise<any>(resolve => {
@@ -169,7 +173,9 @@ export class DBProvider {
         });
     }
 
-    importDeck(deckinfo: any): Promise<void> {
+    // Import a deck by creating or updating a record in the DECKS table, the CARDS records
+    // and the required DECKCARDS records. 
+    importDeck(deckinfo: StackImport): Promise<void> {
         // console.log("DBProvider.importDeck()");
 
         let deckId: number;
@@ -186,14 +192,20 @@ export class DBProvider {
                 // Assume the data is in form of a JSON-encoded array.
                 let data = JSON.parse(deckinfo.data);
                 for (let i: number = 0; i < data.length; i++) {
-                    inserts.push(this.runINSERT("INSERT INTO CARDS (id, front, back) VALUES (?,?,?)", [data[i].id, data[i].front, data[i].back]));
-                    inserts.push(this.runINSERT("INSERT INTO DECK_CARDS (deck_id, card_id) VALUES (?,?)", [deckId, data[i].id]));
+                    var card = data[i];
+                    if (!card.id) {
+                        card.id = new Md5().start().appendStr(card.front).appendStr(card.back).end(false);
+                    };
+
+                    inserts.push(this.runINSERT("INSERT INTO CARDS (id, front, back) VALUES (?,?,?)", [card.id, card.front, card.back]));
+                    inserts.push(this.runINSERT("INSERT INTO DECK_CARDS (deck_id, card_id) VALUES (?,?)", [deckId, card.id]));
                 }
 
                 return Promise.all(inserts);
             }).then(() => { return; });
     }
 
+    // Create the DB objects for a fresh DB and import the built-in default deck of cards.
     initDB(): Promise<void> {
         // console.log("DBProvider.initDB()");
 
@@ -209,11 +221,12 @@ export class DBProvider {
             .then(() => { return this.openDeckFromUri("assets/decks/Einmaleins.json"); })
             .then((content) => { return this.importDeck(content); })
             */
-            
+
             .then(() => { return this.openDeckFromUri("assets/decks/Hauptstädte der Welt.json"); })
             .then((content) => { return this.importDeck(content); });
     }
 
+    // Destroy all DB objects we know of.
     dropDB(): Promise<void> {
         // console.log("DBProvider.dropDB()");
 
@@ -230,6 +243,8 @@ export class DBProvider {
         };
     }
 
+    // Open the DB and keep a reference to it in this provider. Check wether we started
+    // fresh and if so call initDB to populate the DB with all necessary objects.
     openDB(): Promise<void> {
         // console.log("DBProvider.openDB()");
 
@@ -254,12 +269,12 @@ export class DBProvider {
                     return this.sqlite.create({ name: 'lernkartei.db', location: 'default' });
                 })
             };
-            ops = ops.then((db) => {
+
+            return ops.then(db => {
                 // console.log("DBProvider.openDB() - checking wether to initially populate DB");
                 this.db = db;
                 return this.runSELECT("SELECT name FROM sqlite_master WHERE type='table' AND name='DECKS';");
-            });
-            ops = ops.then((rows) => {
+            }).then(rows => {
                 if (rows.length == 0) {
                     // console.log("DBProvider.openDB() - Yes, need to initially populate DB");
                     return this.initDB();
@@ -267,16 +282,14 @@ export class DBProvider {
                     // console.log("DBProvider.openDB() - No, table DECKS exists, we assume structure is OK.");
                     return;
                 }
-            });
-            ops = ops.then(() => {
+            }).then(() => {
                 // console.log("DBProvider.openDB() - done.");
                 return this.db;
             });
-
-            return ops;
         }
     }
 
+    // Load a name setting from the DB.
     loadSetting(key: string): Promise<any> {
         // console.log("DBProvider.getSetting(\"" + key + "\")");
 
@@ -290,6 +303,7 @@ export class DBProvider {
             });
     }
 
+    // Save a named setting into the DB.
     updateSetting(key: string, value: any): Promise<number> {
         // console.log("DBProvider.updateSetting(\"" + key + "\")");
 

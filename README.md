@@ -8,7 +8,7 @@ This idea is not new a all of course. I looked at over a dozen flash-card apps o
 
 For any self-respecting software person this is a prompt to roll their own. Let's see wether I can do better.
 
-## Collection Of Ideas
+## Collection of Ideas
 
 This is a grab-bag of things that may make up a specification if worked on. This is a fun-project so there propably won't be such a thing but the list is here to reference if something becomes muddled.
 

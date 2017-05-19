@@ -407,7 +407,10 @@ export class SessionProvider {
                 this.filteredDecks = null;
                 this.allDecks = null;
             })
-            .catch(e => { console.log(e); } );
+            .catch(e => { 
+                console.log(e); 
+                throw e; 
+            } );
     }
 
 } // of class

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { NavController, LoadingController, AlertController } from 'ionic-angular';
+
+import { Device } from "@ionic-native/device";
 
 import { FileChooser } from '@ionic-native/file-chooser';
 
@@ -16,19 +18,22 @@ export class DecksPage {
     decks: Array<Deck>;
 
     constructor(
-        public navCtrl: NavController, 
+        public navCtrl: NavController,
         private alertCtrl: AlertController,
+        private loadingCtrl: LoadingController,
         public session: SessionProvider,
         public translate: TranslateService,
-        public fileChooser: FileChooser
+        public fileChooser: FileChooser,
+        private device: Device
     ) {
         this.getDecks();
     }
 
-    getDecks() {
+    getDecks(): Promise<Array<Deck>> {
         // console.log("DecksPage.getDecks()");
 
-        this.session.getFilteredDecks().then(decks => { this.decks = decks; });
+        return this.session.getFilteredDecks()
+            .then(decks => { this.decks = decks; return decks; });
     }
 
     filterDecks(searchbar) {
@@ -64,8 +69,8 @@ export class DecksPage {
                     handler: () => {
                         // console.log("DecksPage.deleteDeck() - confirmed");
 
-                        this.session.deleteDeck(deck);   
-                        this.decks = this.decks.filter(_deck => { deck.id !== _deck.id; } );                
+                        this.session.deleteDeck(deck);
+                        this.decks = this.decks.filter(_deck => { deck.id !== _deck.id; });
                     }
                 }
             ]
@@ -77,9 +82,31 @@ export class DecksPage {
     importDeckFromFile(event) {
         console.log("DecksPage.importDeckFromFile()");
 
+        // Create the loader
+        let loader = this.loadingCtrl.create({
+            content: this.translate.instant("LOADING")
+        });
+        loader.present();
+
         this.fileChooser.open()
-            .then(uri => this.session.importDeck(uri))
-            .then(() => this.getDecks());
+            .then(uri => {
+                console.log("DecksPage.importDeckFromFile() - \"" + uri + "\"");
+                return this.session.importDeck(uri);
+            }).then(() => { return this.getDecks(); })   
+            .then(() => { loader.dismiss(); })
+            .catch(err => {
+                loader.dismiss();
+                let confirm = this.alertCtrl.create({
+                    "title": this.translate.instant("ERROR"),
+                    "message": this.translate.instant("ERROR_IMPORTING_DECK") + "\n\n" + (err.message || err),
+                    "buttons": [
+                        { text: this.translate.instant("OK") }
+                    ]
+                });
+
+                confirm.present();
+            })
     }
+
 
 }
