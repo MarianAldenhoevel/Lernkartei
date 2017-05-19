@@ -7,6 +7,7 @@ import { Card, CardPresentationMode, Box } from '../../types/types';
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { SessionProvider } from '../../providers/session';
+import { DBProvider } from '../../providers/db';
 
 @Component({
     selector: 'page-train',
@@ -25,7 +26,8 @@ export class TrainPage {
         private alertCtrl: AlertController,
         public splashScreen: SplashScreen,
         public translate: TranslateService,
-        public session: SessionProvider) {
+        public session: SessionProvider,
+        public db: DBProvider) {
     }
 
     updateStats(): void {
@@ -204,31 +206,50 @@ export class TrainPage {
         }
     }
 
-    ionViewDidLoad(): void {
-        // console.log("TrainPage.ionViewDidLoad()");
-
-        this.splashScreen.hide();
+    cardSwiped(event): void {
+        // console.log("TrainPage.cardSwiped(" + event.direction + ")");
+        
+        switch (event.direction) {
+            case 2 /* left */: {
+                this.recordOutcome(false);
+                break;
+            }
+            case 4 /* right */: {
+                this.recordOutcome(true);
+                break;
+            }
+        }
     }
 
     ionViewDidEnter(): void {
         // console.log("TrainPage.ionViewDidEnter()");
 
-        if (!this.session.currentSession.started) {
-            this.session.startSession();
-        }
+        this.db.openDB().then(() => {
 
-        this.nextCard();
+            if (!this.session.currentSession.started) {
+                this.session.startSession();
+            }
+
+            this.nextCard();
+
+            this.splashScreen.hide();
+        })
     }
 
     ionViewWillLeave(): void {
         // console.log("TrainPage.ionViewWillLeave()");
-        
+
         if (this.session.currentSession.finished) {
             this.session.saveSession();
         }
     }
 
     /*
+
+        ionViewDidLoad(): void {
+            // console.log("TrainPage.ionViewDidLoad()");
+        }
+
         ionViewCanEnter(): boolean {
             console.log("TrainPage.ionViewCanEnter()");
             return true;

@@ -150,7 +150,7 @@ export class SettingsPage {
     ionViewWillLeave(): void {
         console.log("SettingsPage.ionViewWillLeave()");
 
-        this.session.saveSettings();
+        this.session.saveSettingsObject();
     }
 
 }

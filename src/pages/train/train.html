@@ -35,7 +35,8 @@
             "flippingOut": (animationClass=="flippingOut"), 
             "flippingIn": (animationClass=="flippingIn")
         }' [style.backgroundColor]="flipped ? session.settings.card.back.backgroundColor : session.settings.card.front.backgroundColor"
-        [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color">
+        [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color"
+        (swipe)="cardSwiped($event)">
         <ion-card-content>
             <div>
                 {{currentCard.deck}}

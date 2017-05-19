@@ -69,19 +69,19 @@ export class SessionProvider {
         _appVersion.getVersionNumber().then(s => { this.appVersion.versionNumber = s }).catch(err => { });
     }
 
-    loadSettings(): void {
-        // console.log("SessionProvider.loadSettings()");
+    loadSettingsObject(): void {
+        // console.log("SessionProvider.loadSettingsObject()");
 
-        this.db.loadSetting("settings").then(value => {
-            // console.log("SessionProvider.loadSettings() - loaded");
+        this.db.loadSetting("settingsObject").then(value => {
+            // console.log("SessionProvider.loadSettingsObject() - loaded");
             Object.assign(this.settings, value);
         });
     }
 
-    saveSettings(): void {
-        // console.log("SessionProvider.saveSettings()");
+    saveSettingsObject(): void {
+        // console.log("SessionProvider.saveSettingsObject()");
 
-        this.db.updateSetting("settings", this.settings);
+        this.db.updateSetting("settingsObject", this.settings);
     }
 
     setDeckFilter(deckFilter: string) {
@@ -401,7 +401,7 @@ export class SessionProvider {
     }
 
     importDeck(uri: string): Promise<any> {
-        return this.db.openDeckFile(uri)
+        return this.db.openDeckFromUri(uri)
             .then(content => this.db.importDeck(content))
             .then(() => {
                 this.filteredDecks = null;

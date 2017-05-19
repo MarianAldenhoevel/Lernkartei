@@ -31,8 +31,6 @@ export class LernkarteiApp {
         platform.ready().then(() => {
             // console.log("LernkarteApp.constructor().ready()");
 
-            db.openDB().then(() => session.loadSettings());
-
             // Set up translation-system
             translate.setDefaultLang('en');
 
