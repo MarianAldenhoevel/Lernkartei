@@ -221,6 +221,11 @@ export class TrainPage {
         }
     }
 
+    cardTapped(event): void {
+        // console.log("TrainPage.cardTapped()");
+        this.flipClick(event);
+    }
+
     ionViewDidEnter(): void {
         // console.log("TrainPage.ionViewDidEnter()");
 
