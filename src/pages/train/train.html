@@ -6,27 +6,15 @@
 
 <ion-header no-border>
     <ion-toolbar>
-        <training-stats #trainingStats></training-stats>    
+        <ion-grid>
+            <ion-row>
+                <ion-col center>
+                    <training-stats #trainingStats></training-stats>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
     </ion-toolbar>
 </ion-header>
-
-<!--
-<ion-header no-border>
-    <ion-toolbar>
-        <div class="boxes">
-            <div class="box box_left">
-                <div class="cards cards_0">52</div>&nbsp;
-            </div>
-            <div class="box box_left">
-                <div class="cards cards_1">100</div>&nbsp;
-            </div>
-            <div class="box box_last">
-                <div class="cards cards_2">58</div>&nbsp;
-            </div>
-        </div>
-    </ion-toolbar>
-</ion-header>
--->
 
 <ion-content padding [style.backgroundColor]="session.settings.background">
     <ion-card *ngIf="currentCard" [ngClass]='{
@@ -35,9 +23,8 @@
             "flippingOut": (animationClass=="flippingOut"), 
             "flippingIn": (animationClass=="flippingIn")
         }' [style.backgroundColor]="flipped ? session.settings.card.back.backgroundColor : session.settings.card.front.backgroundColor"
-        [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color"
-        (tap)="cardTapped($event)"
-        (swipe)="cardSwiped($event)">
+        [style.color]="flipped ? session.settings.card.back.color : session.settings.card.front.color" (tap)="flipClick($event)"
+        (swipe)="cardSwipe($event)">
         <ion-card-content>
             <div>
                 {{currentCard.deck}}
@@ -55,27 +42,27 @@
 
 <ion-footer no-border>
     <ion-toolbar>
-        <ion-row>
-            <div *ngIf="currentCard">
-                <ion-col>
-                    <button ion-button (click)="dontKnowClick($event)" icon-left clear small color="danger">
+        <ion-grid *ngIf="currentCard">
+            <ion-row>
+                <ion-col text-left>
+                    <button ion-button (tap)="dontKnowClick($event)" icon-left clear small color="danger">
                         <ion-icon name="thumbs-down"></ion-icon>                        
                         {{ "DONTKNOW" | translate }}                        
                     </button>
                 </ion-col>
-                <ion-col>
-                    <button ion-button (click)="flipClick($event)" icon-left clear small color="dark">
+                <ion-col center>
+                    <button ion-button (tap)="flipClick($event)" icon-left clear small color="dark">
                         <ion-icon name="sync"></ion-icon>
                         {{ "FLIP" | translate }}
                     </button>
                 </ion-col>
-                <ion-col>
-                    <button ion-button (click)="knowClick($event)" icon-right clear small color="secondary">
+                <ion-col text-right>
+                    <button ion-button (tap)="knowClick($event)" icon-right clear small color="secondary">
                         {{ "KNOW" | translate }}
                         <ion-icon name="thumbs-up"></ion-icon>                       
                     </button>
                 </ion-col>
-            </div>
-        </ion-row>
+            </ion-row>
+        </ion-grid>
     </ion-toolbar>
 </ion-footer>

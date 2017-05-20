@@ -9,6 +9,7 @@ import { Deck, Card, Box, CardPresentationMode, CardDowngradeMode, Session, Sess
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { DBProvider } from './db';
+import { ToolsProvider } from './tools';
 
 @Injectable()
 export class SessionProvider {
@@ -53,8 +54,9 @@ export class SessionProvider {
     }
 
     constructor(
-        public device: Device, 
-        public db: DBProvider, 
+        public device: Device,
+        public db: DBProvider,
+        public tools: ToolsProvider,
         public translate: TranslateService,
         private _appVersion: AppVersion) {
         // console.log('SessionProvider.constructor()');
@@ -174,16 +176,11 @@ export class SessionProvider {
 
                         // Put the card in the right box on the current stack structure. 
                         this.currentCardStackInBoxes[card.current_box].unpresented.push(card);
-
-                        // Note what the minimum box with cards is in this current stack.
-                        // We will start a training session there and only reset to the
-                        // minimal box when we are through with all cards.  
-                        if (this.startingBox == null || (this.startingBox > card.current_box)) {
-                            this.startingBox = card.current_box;
-                        }
                     }
 
                     // console.log("SessionProvider.getCurrentCardStack() - boxes: " + this.logStack(this.currentCardStackInBoxes));
+
+                    this.startingBox = this.lowestBoxWithUnpresentedCards();
 
                     resolve(this.currentCardStackInBoxes);
                 })
@@ -217,7 +214,7 @@ export class SessionProvider {
 
         this.db.deleteDeck(deck);
         this.invalidateCurrentCardStack();
-        this.allDecks = this.allDecks.filter(_deck => { _deck.id !== deck.id; } );
+        this.allDecks = this.allDecks.filter(_deck => { _deck.id !== deck.id; });
         this.filteredDecks = this.filteredDecks.filter(_deck => { _deck.id !== deck.id; });
     }
 
@@ -236,50 +233,6 @@ export class SessionProvider {
         this.db.updateSession(this.currentSession).then(() => { this.currentSession.started = null; });
     }
 
-    intervalToStr(started, finished: Date): string {
-        // console.log("SessionProvider.intervalToStr(" + (started ? started.getTime() : "null") + "," + (finished ? finished.getTime() : "null") + ")");
-
-        // In years
-        let y = finished.getFullYear() - started.getFullYear();
-        if (y) {
-            return y.toString() + " " + ((y==1) ? this.translate.instant("YEAR") : this.translate.instant("YEARS"));
-        }
-
-        // In months
-        let m = (finished.getMonth() + 12 * finished.getFullYear()) - (started.getMonth() + 12 * started.getFullYear());
-        if (m) {
-            return m.toString() + " " + ((m==1) ? this.translate.instant("MONTH") : this.translate.instant("MONTHS"));
-        }
-
-        let ms = finished.getTime() - started.getTime();
-
-        // In weeks
-        let w = Math.floor(ms/(1000*60*60*24*7));
-        if (w) {
-            return w.toString() + " " + ((w==1) ? this.translate.instant("WEEK") : this.translate.instant("WEEKS"));
-        }
-    
-        // In days
-        let d = Math.floor(ms/(1000*60*60*24));
-        if (d) {
-            return d.toString() + " " + ((d==1) ? this.translate.instant("DAY") : this.translate.instant("DAYS"));
-        }
-    
-        // In hours
-        let h = Math.floor(ms/(1000*60*60));
-        if (h) {
-            return h.toString() + " " + ((h==1) ? this.translate.instant("HOUR") : this.translate.instant("HOURS"));
-        }
-    
-        // In minutes
-        let mi = Math.floor(ms/(1000*60));
-        if (mi) {
-            return mi.toString() + " " + ((mi==1) ? this.translate.instant("MINUTE") : this.translate.instant("MINUTES"));
-        }
-    
-        return this.translate.instant("UNDER_A_MINUTE");
-    }
-
     getRecentSessions(): Promise<Array<Session>> {
         // console.log("SessionProvider.getRecentSessions()");
 
@@ -287,17 +240,17 @@ export class SessionProvider {
             let result: Array<SessionInfo> = [];
 
             for (let i: number = 0; i < sessionrows.length; i++) {
-                
+
                 // console.log(JSON.stringify(sessionrows[i], null, 4));
-                
-                result.push({ 
-                    "ago":           this.translate.instant("AGO_PRE") + this.intervalToStr(new Date(sessionrows[i].started), new Date()) + this.translate.instant("AGO_POST"),
-                    "duration":      this.translate.instant("FOR_PRE") + this.intervalToStr(new Date(sessionrows[i].started), new Date(sessionrows[i].finished)) + this.translate.instant("FOR_POST"),
-                    "cards_known":   sessionrows[i].cards_known,
+
+                result.push({
+                    "ago": this.translate.instant("AGO_PRE") + this.tools.intervalToStr(new Date(sessionrows[i].started), new Date()) + this.translate.instant("AGO_POST"),
+                    "duration": this.translate.instant("FOR_PRE") + this.tools.intervalToStr(new Date(sessionrows[i].started), new Date(sessionrows[i].finished)) + this.translate.instant("FOR_POST"),
+                    "cards_known": sessionrows[i].cards_known,
                     "cards_unknown": sessionrows[i].cards_unknown
                 });
             };
-            
+
             return result;
         });
     }
@@ -341,6 +294,18 @@ export class SessionProvider {
         }
     }
 
+    // Return the index of the lowest box that has unpresented cards. 
+    lowestBoxWithUnpresentedCards(): number {
+        // console.log("SessionProvider.lowestBoxWithUnpresentedCards()");
+        for (let box: number = 0; box < this.currentCardStackInBoxes.length; box++) {
+            if (this.currentCardStackInBoxes[box].unpresented.length) {
+                return box;
+            }
+        }
+
+        return 0;
+    }
+
     recordOutcome(card: Card, known: boolean) {
         // console.log("SessionProvider.recordOutcome(" + card.id + "," + (known ? "known" : "unknown") + ")");
 
@@ -348,23 +313,14 @@ export class SessionProvider {
             // Remove card from the current box on the current stack.
             let old_box: number = card.current_box ? card.current_box : 0;
 
-            // console.log("SessionProvider.recordOutcome(" + card.id + "," + (known ? "known" : "unknown") + ") -  remove from box " + old_box);
-
             this.currentCardStackInBoxes[old_box].unpresented = this.currentCardStackInBoxes[old_box].unpresented.filter((_card) => _card.id !== card.id);
             this.currentCardStackInBoxes[old_box].presented = this.currentCardStackInBoxes[old_box].presented.filter((_card) => _card.id !== card.id);
 
-            // console.log("SessionProvider.recordOutcome(" + card.id + "," + (known ? "known" : "unknown") + ") -  check starting box");
-
             // If this was the last card from our starting box for the current training
-            // session update the starting box to next box or back to 0.
+            // session reset the starting box to the now lowest that has unpresented cards. .
             if ((this.startingBox <= old_box) && (this.currentCardStackInBoxes[old_box].unpresented.length == 0)) {
-                this.startingBox = this.startingBox + 1;
-                if (this.startingBox >= this.currentCardStackInBoxes.length) {
-                    this.startingBox = 0;
-                }
+                this.startingBox = this.lowestBoxWithUnpresentedCards();
             }
-
-            // console.log("SessionProvider.recordOutcome(" + card.id + "," + (known ? "known" : "unknown") + ") -  update box");
 
             // Modify card.
             if (known && (card.current_box < this.currentCardStackInBoxes.length - 1)) {
@@ -375,22 +331,18 @@ export class SessionProvider {
                 card.current_box = card.current_box - 1;
             }
 
-            // console.log("SessionProvider.recordOutcome(" + card.id + "," + (known ? "known" : "unknown") + ") -  push into new box " + card.current_box);
-
             // Put card in the new box. If it goes to the same box (known in the last box or unknown in
-            // the first box) put it into the presented section.
-            if (card.current_box == old_box) {
+            // the first box) put it into the presented section, otherwise treat as unpresented.
+            if ((card.current_box == old_box) || (card.current_box == this.currentCardStackInBoxes.length - 1)) {
                 this.currentCardStackInBoxes[card.current_box].presented.push(card);
             } else {
                 this.currentCardStackInBoxes[card.current_box].unpresented.push(card);
             }
 
-            // console.log("SessionProvider.recordOutcome(" + card.id + "," + (known ? "known" : "unknown") + ") - boxes: " + this.logStack(this.currentCardStackInBoxes));
-
             // Update DB to persist the card status.
             this.db.updateCard(card);
 
-            // Update the session and store to db.            
+            // Update the running session totals.            
             if (known) {
                 this.currentSession.cards_known = this.currentSession.cards_known + 1;
             } else {
@@ -407,10 +359,10 @@ export class SessionProvider {
                 this.filteredDecks = null;
                 this.allDecks = null;
             })
-            .catch(e => { 
-                console.log(e); 
-                throw e; 
-            } );
+            .catch(e => {
+                console.log(e);
+                throw e;
+            });
     }
 
 } // of class

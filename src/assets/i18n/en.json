@@ -40,7 +40,7 @@
     "CARD_DOWNGRADE_MODE_TO_FIRST_BOX": "drops to first box",
     "CONFIRM_DELETE_DECK": "Do you really want to delete this deck",
     "ALERT": "Alert",
-    "ALERT_NEW_SESSION": "All cards presented once, starting new session",
+    "ALERT_NEW_SESSION": "All cards presented, starting new session",
     "ALERT_NO_CARDS": "No cards selected for training. Import or activate a deck.",
     "YEAR": "year",
     "YEARS": "years",

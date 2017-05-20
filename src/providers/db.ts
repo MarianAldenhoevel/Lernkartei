@@ -66,7 +66,7 @@ export class DBProvider {
     // Resolves to a SLQResult interface which can include last inserted ID,
     // rows affected and row-data returned.
     runSQL(sql: string, params?: Array<any>): Promise<any> {
-        console.log("DBProvider.runSQL(\"" + sql + "\") - " + this.paramsToLog(params));
+        // console.log("DBProvider.runSQL(\"" + sql + "\") - " + this.paramsToLog(params));
 
         if (this.useWebSQL()) {
             let ops = new Promise<any>(resolve => {
@@ -222,8 +222,12 @@ export class DBProvider {
             .then((content) => { return this.importDeck(content); })
             */
 
+            .then(() => { return this.openDeckFromUri("assets/decks/Zehn Testkarten.json"); })
+            .then((content) => { return this.importDeck(content); })
+
             .then(() => { return this.openDeckFromUri("assets/decks/Hauptstädte der Welt.json"); })
             .then((content) => { return this.importDeck(content); });
+
     }
 
     // Destroy all DB objects we know of.

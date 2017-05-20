@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController, AlertController } from 'ionic-angular';
+import { NavController, AlertController } from 'ionic-angular';
 
 import { Device } from "@ionic-native/device";
 
@@ -7,6 +7,7 @@ import { FileChooser } from '@ionic-native/file-chooser';
 
 import { Deck } from '../../types/types';
 import { SessionProvider } from '../../providers/session';
+import { LoadingProvider } from '../../providers/loading';
 
 import { TranslateService } from 'ng2-translate/ng2-translate';
 
@@ -20,7 +21,7 @@ export class DecksPage {
     constructor(
         public navCtrl: NavController,
         private alertCtrl: AlertController,
-        private loadingCtrl: LoadingController,
+        private loading: LoadingProvider,
         public session: SessionProvider,
         public translate: TranslateService,
         public fileChooser: FileChooser,
@@ -82,20 +83,16 @@ export class DecksPage {
     importDeckFromFile(event) {
         console.log("DecksPage.importDeckFromFile()");
 
-        // Create the loader
-        let loader = this.loadingCtrl.create({
-            content: this.translate.instant("LOADING")
-        });
-        loader.present();
-
+        this.loading.show();
+        
         this.fileChooser.open()
             .then(uri => {
                 console.log("DecksPage.importDeckFromFile() - \"" + uri + "\"");
                 return this.session.importDeck(uri);
             }).then(() => { return this.getDecks(); })   
-            .then(() => { loader.dismiss(); })
+            .then(() => { this.loading.hide(); })
             .catch(err => {
-                loader.dismiss();
+                this.loading.hide();
                 let confirm = this.alertCtrl.create({
                     "title": this.translate.instant("ERROR"),
                     "message": this.translate.instant("ERROR_IMPORTING_DECK") + "\n\n" + (err.message || err),

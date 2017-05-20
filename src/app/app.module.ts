@@ -27,7 +27,9 @@ import { SettingsPage } from '../pages/settings/settings';
 import { AboutPage } from '../pages/about/about';
 
 import { SessionProvider } from '../providers/session';
+import { LoadingProvider } from '../providers/loading';
 import { DBProvider } from '../providers/db';
+import { ToolsProvider } from '../providers/tools';
 
 @NgModule({
     declarations: [
@@ -71,7 +73,9 @@ import { DBProvider } from '../providers/db';
         AppVersion,
         TranslateService,
         SessionProvider,
+        LoadingProvider,
         DBProvider,
+        ToolsProvider,
         SQLite,
         FileChooser,
         { provide: ErrorHandler, useClass: IonicErrorHandler }

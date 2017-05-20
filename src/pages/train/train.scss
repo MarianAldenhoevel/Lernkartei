@@ -23,7 +23,7 @@ page-train {
         -webkit-backface-visibility: visible !important;
         backface-visibility: visible !important;
         animation-name: flipOut;
-        animation-duration: .50s;
+        animation-duration: .30s;
         animation-timing-function: ease-in; // slow start, fast end
     }
 
@@ -42,7 +42,7 @@ page-train {
         -webkit-backface-visibility: visible !important;
         backface-visibility: visible !important;
         animation-name: flipIn;
-        animation-duration: .50s;
+        animation-duration: .30s;
         animation-timing-function: ease-out; // fast start, slow end
     }
 

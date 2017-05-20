@@ -8,6 +8,7 @@ training-stats {
         -webkit-border-radius: 5px;
         -moz-border-radius: 5px;
         border-radius: 5px;
+        background-color: lighten($toolbar-background, 100%);
     }
 
     div.box {
@@ -39,94 +40,128 @@ training-stats {
         height: 100%;
     }
 
+    $box-lighten: 40%;
+    $box-gradient: 120deg;
 
-    // Set of two
-    div.cards_3_0 {
-        background-color: #ff0000;
+    div {
+        // Set of two
+        $box0: #ff3333;
+        $box1: #00ff00;
+
+        &.cards_2_0 {
+            background: linear-gradient($box-gradient, lighten($box0, $box-lighten), $box0);
+        }
+    
+        &.cards_2_1 {
+            background: linear-gradient($box-gradient, lighten($box1, $box-lighten), $box1);
+        }
     }
 
-    div.cards_3_2 {
-        background-color: green;       
+    div {
+        // Set of three
+        $box0: #ff3333;
+        $box1: yellow;
+        $box2: #00ff00;
+
+        &.cards_3_0 {
+            background: linear-gradient($box-gradient, lighten($box0, $box-lighten), $box0);
+        }
+        
+        &.cards_3_1 {
+            background: linear-gradient($box-gradient, lighten($box1, $box-lighten), $box1);
+        }
+        
+        &.cards_3_2 {
+            background: linear-gradient($box-gradient, lighten($box2, $box-lighten), $box2);
+        }
     }
 
+    div {
+        // Set of four
+        $box0: #ff3333;
+        $box1: orange;
+        $box2: yellow;
+        $box3: #00ff00;
+        
+        &.cards_4_0 {
+            background: linear-gradient($box-gradient, lighten($box0, $box-lighten), $box0);
+        }
+        
+        &.cards_4_1 {
+            background: linear-gradient($box-gradient, lighten($box1, $box-lighten), $box1);
+        }
+        
+        &.cards_4_2 {
+            background: linear-gradient($box-gradient, lighten($box2, $box-lighten), $box2);
+        }
 
-    // Set of three
-    div.cards_3_0 {
-        background-color: #ff0000;
+        &.cards_4_3 {
+            background: linear-gradient($box-gradient, lighten($box3, $box-lighten), $box3);
+        }
+        
     }
 
-    div.cards_3_1 {
-        background-color: yellow; 
+    div {
+        // Set of five
+        $box0: #ff3333;
+        $box1: orange;
+        $box2: yellow;
+        $box3: green;
+        $box4: #00ff00;
+        
+        &.cards_5_0 {
+            background: linear-gradient($box-gradient, lighten($box0, $box-lighten), $box0);
+        }
+        
+        &.cards_5_1 {
+            background: linear-gradient($box-gradient, lighten($box1, $box-lighten), $box1);
+        }
+        
+        &.cards_5_2 {
+            background: linear-gradient($box-gradient, lighten($box2, $box-lighten), $box2);
+        }
+
+        &.cards_5_3 {
+            background: linear-gradient($box-gradient, lighten($box3, $box-lighten), $box3);
+        }
+        
+        &.cards_5_4 {
+            background: linear-gradient($box-gradient, lighten($box4, $box-lighten), $box4);
+        }
+        
     }
 
-    div.cards_3_2 {
-        background-color: #00ff00;       
+    div {
+        // Set of three
+        $box0: #ff3333;
+        $box1: #bb7700;
+        $box2: orange;
+        $box3: yellow;
+        $box4: green;
+        $box5: #00ff00;
+        
+        &.cards_6_0 {
+            background: linear-gradient($box-gradient, lighten($box0, $box-lighten), $box0);
+        }
+        
+        &.cards_6_1 {
+            background: linear-gradient($box-gradient, lighten($box1, $box-lighten), $box1);
+        }
+        
+        &.cards_6_2 {
+            background: linear-gradient($box-gradient, lighten($box2, $box-lighten), $box2);
+        }
+
+        &.cards_6_3 {
+            background: linear-gradient($box-gradient, lighten($box3, $box-lighten), $box3);
+        }
+        
+        &.cards_6_4 {
+            background: linear-gradient($box-gradient, lighten($box4, $box-lighten), $box4);
+        }
+        
+        &.cards_6_5 {
+            background: linear-gradient($box-gradient, lighten($box5, $box-lighten), $box5);
+        }
     }
-
-
-    // Set of four
-    div.cards_4_0 {
-        background-color: #ff0000;
-    }
-
-    div.cards_4_1 {
-        background-color: orange;        
-    }
-
-    div.cards_4_2 {
-        background-color: yellow; 
-    }
-
-    div.cards_4_3 {
-        background-color: #00ff00;       
-    }
-
-
-    // Set of five
-    div.cards_5_0 {
-        background-color: #ff0000;
-    }
-
-    div.cards_5_1 {
-        background-color: orange;        
-    }
-
-    div.cards_5_2 {
-        background-color: yellow; 
-    }
-
-    div.cards_5_3 {
-        background-color: green;       
-    }
-
-    div.cards_5_4 {
-        background-color: #00ff00;
-    }
-
-
-    // Set of six
-    div.cards_6_0 {
-        background-color: #ff0000;
-    }
-
-    div.cards_6_1 {
-        background-color: #bb7700;        
-    }
-
-    div.cards_6_2 {
-        background-color: orange;        
-    }
-
-    div.cards_6_3 {
-        background-color: yellow; 
-    }
-
-    div.cards_6_4 {
-        background-color: green;       
-    }
-
-    div.cards_6_5 {
-        background-color: #00ff00;
-    }
-
 }

@@ -8,6 +8,8 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 
 import { SessionProvider } from '../../providers/session';
 import { DBProvider } from '../../providers/db';
+import { ToolsProvider } from '../../providers/tools';
+import { LoadingProvider } from '../../providers/loading';
 
 @Component({
     selector: 'page-train',
@@ -18,6 +20,7 @@ export class TrainPage {
     public flipped: boolean = false;
     public animationClass: string = "";
     public animationTimeoutID: number = 0;
+    public sessionDuration: string = "";
 
     @ViewChild("trainingStats") trainingStats;
 
@@ -25,6 +28,8 @@ export class TrainPage {
         public navCtrl: NavController,
         private alertCtrl: AlertController,
         public splashScreen: SplashScreen,
+        private loading: LoadingProvider,
+        private tools: ToolsProvider,
         public translate: TranslateService,
         public session: SessionProvider,
         public db: DBProvider) {
@@ -67,7 +72,7 @@ export class TrainPage {
             this.updateStats();
 
             if (card == null) {
-                console.log("TrainPage.nextCard() - No card picked");
+                // console.log("TrainPage.nextCard() - No card picked");
 
                 // No card was picked. There are two ways this can happen:
                 // 1) There are none in the active stack
@@ -80,7 +85,7 @@ export class TrainPage {
                             {
                                 text: this.translate.instant("OK"),
                                 handler: () => {
-                                    console.log("TrainPage.nextCard() - New session OK");
+                                    // console.log("TrainPage.nextCard() - New session OK");
                                     this.session.invalidateCurrentCardStack();
                                     this.nextCard();
                                 }
@@ -127,6 +132,7 @@ export class TrainPage {
             this.session.startSession();
         }
         this.session.currentSession.finished = new Date();
+        this.sessionDuration = this.translate.instant("FOR_PRE") + this.tools.intervalToStr(new Date(this.session.currentSession.started), new Date(this.session.currentSession.finished)) + this.translate.instant("FOR_POST");
 
         // Are we currently animating a slide out to either
         // side?
@@ -142,6 +148,7 @@ export class TrainPage {
             // No sliding-animation is active. So we can now record the
             // outcome on the current card.
             this.session.recordOutcome(this.currentCard, known);
+            this.updateStats();
 
             // And then animate the slide-out of the current card if so
             // requested in the settings.
@@ -159,6 +166,7 @@ export class TrainPage {
             } else {
                 this.nextCard();
             };
+
         }
     }
 
@@ -198,17 +206,17 @@ export class TrainPage {
                     this.animationClass = "flippingIn";
                     this.animationTimeoutID = setTimeout(() => {
                         this.cancelAnimation();
-                    }, 500);
-                }, 500);
+                    }, 300);
+                }, 300);
             }
         } else {
             this.flipped = !this.flipped;
         }
     }
 
-    cardSwiped(event): void {
+    cardSwipe(event): void {
         // console.log("TrainPage.cardSwiped(" + event.direction + ")");
-        
+
         switch (event.direction) {
             case 2 /* left */: {
                 this.recordOutcome(false);
@@ -221,15 +229,13 @@ export class TrainPage {
         }
     }
 
-    cardTapped(event): void {
-        // console.log("TrainPage.cardTapped()");
-        this.flipClick(event);
-    }
-
     ionViewDidEnter(): void {
         // console.log("TrainPage.ionViewDidEnter()");
 
         this.db.openDB().then(() => {
+
+            this.loading.dismiss();
+
 
             if (!this.session.currentSession.started) {
                 this.session.startSession();
@@ -244,34 +250,39 @@ export class TrainPage {
     ionViewWillLeave(): void {
         // console.log("TrainPage.ionViewWillLeave()");
 
+        // If we have turned at least one card (timestamp recorded in
+        // finished), and have trained for more than a minute save this
+        // session.
         if (this.session.currentSession.finished) {
-            this.session.saveSession();
+            let ms = this.session.currentSession.finished.getTime() - this.session.currentSession.started.getTime();
+            if (ms / (1000 * 60) > 1) {
+                this.session.saveSession();
+                this.sessionDuration = "";
+            }
         }
     }
 
+    ionViewDidLoad(): void {
+        // console.log("TrainPage.ionViewDidLoad()");
+
+        this.loading.show();
+    }
+
     /*
+    ionViewCanEnter(): boolean {
+        console.log("TrainPage.ionViewCanEnter()");
+    }
+ 
+    ionViewDidLeave(): void {
+        console.log("TrainPage.ionViewDidLeave()");
+    }
 
-        ionViewDidLoad(): void {
-            // console.log("TrainPage.ionViewDidLoad()");
-        }
-
-        ionViewCanEnter(): boolean {
-            console.log("TrainPage.ionViewCanEnter()");
-            return true;
-        }
-    
-        ionViewDidLeave(): void {
-            console.log("TrainPage.ionViewDidLeave()");
-
-            this.session.endSession();
-        }
-
-        ionViewWillEnter(): void {
-            console.log("TrainPage.ionViewWillLoad()");
-        }
-    
-        ionViewWillUnload(): void {
-            console.log("TrainPage.ionViewWillUnload()");
-        }
-    */
+    ionViewWillEnter(): void {
+        console.log("TrainPage.ionViewWillLoad()");
+    }
+ 
+    ionViewWillUnload(): void {
+        console.log("TrainPage.ionViewWillUnload()");
+    }
+*/
 }
