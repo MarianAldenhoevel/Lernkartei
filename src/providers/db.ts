@@ -5,8 +5,9 @@ import { SQLite } from "@ionic-native/sqlite";
 import { FilePath } from '@ionic-native/file-path';
 
 import * as jQuery from "jquery";
+import * as Papa from "papaparse";
 
-import { Md5 } from 'ts-md5/dist/md5';
+import { Md5 } from "ts-md5/dist/md5";
 
 import { Deck, Card, StackImport, Session } from "../types/types";
 
@@ -169,11 +170,11 @@ export class DBProvider {
             })
         }).then(deckinfo => {
             // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - resolve name?");
-                
+
             if ((uri.startsWith("content://")) && this.device.cordova && (this.device.platform === "Android")) {
                 // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - yes.");
-                
-                return new Promise<StackImport>((resolve, reject) => { 
+
+                return new Promise<StackImport>((resolve, reject) => {
                     this.filepath.resolveNativePath(uri).then(path => {
                         // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - native path = \"" + path + "\"");
                         deckinfo.name = path;
@@ -187,7 +188,7 @@ export class DBProvider {
             }
         }).then(deckinfo => {
             // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - find basename.");
-            
+
             let basename: string = decodeURIComponent(deckinfo.name).split("/").pop().split("#")[0].split("?")[0];
             let i: number = basename.lastIndexOf(".");
             if (i !== -1) {
@@ -195,7 +196,7 @@ export class DBProvider {
             }
 
             // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - basename = \"" + basename + "\"");
-            
+
             deckinfo.name = basename;
             return deckinfo;
         })
@@ -214,25 +215,42 @@ export class DBProvider {
                 deckId = data[0].id;
                 // console.log("Deck inserted with id " + deckId.toString());            
             }).then(() => {
+                return new Promise<Array<any>>((resolve, reject) => {
+                    try {
+                        // Is this JSON data?
+                        let data = JSON.parse(deckinfo.data);
+                        resolve(data);
+                    } catch (e) {
+                        // propably not JSON. How about CSV?
+                        try {
+                            let parsed = Papa.parse(deckinfo.data);
+                            if (parsed.errors && parsed.errors.length) {
+                                throw parsed.errors;
+                            }
+
+                            let cardarr = [];
+                            for (let i: number = 0; i < parsed.data.length; i++) {
+                                cardarr.push({ "front": parsed.data[i][0], "back": parsed.data[i][1] });
+                            };
+                            resolve(cardarr);
+                        } catch (e) {
+                            // Nope, not Papa-parseable CSV either.
+                            reject(e);
+                        }
+                    }
+                })
+            }).then(cardarr => {
+                // Iterate over the array of cards and create an INSERT for each.
                 var inserts = [];
 
-                try {
-                    // Is this JSON data?
-                    let data = JSON.parse(deckinfo.data);
+                for (let i: number = 0; i < cardarr.length; i++) {
+                    var card = cardarr[i];
+                    if (!card.id) {
+                        card.id = new Md5().start().appendStr(card.front).appendStr(card.back).end(false);
+                    };
 
-                    // Yes, should be an array. Now iterate over the cards.
-                    for (let i: number = 0; i < data.length; i++) {
-                        var card = data[i];
-                        if (!card.id) {
-                            card.id = new Md5().start().appendStr(card.front).appendStr(card.back).end(false);
-                        };
-
-                        inserts.push(this.runINSERT("INSERT OR REPLACE INTO CARDS (id, front, back) VALUES (?,?,?)", [card.id, card.front, card.back]));
-                        inserts.push(this.runINSERT("INSERT OR REPLACE INTO DECK_CARDS (deck_id, card_id) VALUES (?,?)", [deckId, card.id]));
-                    }
-                } catch (e) {
-                    // propably not JSON.
-                    throw e;
+                    inserts.push(this.runINSERT("INSERT OR REPLACE INTO CARDS (id, front, back) VALUES (?,?,?)", [card.id, card.front, card.back]));
+                    inserts.push(this.runINSERT("INSERT OR REPLACE INTO DECK_CARDS (deck_id, card_id) VALUES (?,?)", [deckId, card.id]));
                 }
 
                 return Promise.all(inserts);
@@ -256,7 +274,12 @@ export class DBProvider {
             .then(deckinfo => { return this.importDeck(deckinfo); })
             */
 
+            /*
             .then(() => { return this.openDeckFromUri("assets/decks/Zehn Testkarten.json"); })
+            .then(deckinfo => { return this.importDeck(deckinfo); })
+            */
+
+            .then(() => { return this.openDeckFromUri("assets/decks/Zehn Testkarten.csv"); })
             .then(deckinfo => { return this.importDeck(deckinfo); })
 
             .then(() => { return this.openDeckFromUri("assets/decks/Hauptstädte der Welt.json"); })

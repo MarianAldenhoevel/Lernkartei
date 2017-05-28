@@ -158,7 +158,7 @@ export class SessionProvider {
         } else {
             // Load stack of all cards in all decks filtered AND active
             return new Promise(resolve => {
-                console.log("SessionProvider.getCurrentCardStack() - load");
+                // console.log("SessionProvider.getCurrentCardStack() - load");
 
                 this.db.loadCurrentCardStack(this.deckFilter).then(currentCardStack => {
                     // We want the cards to be sorted into boxes.
