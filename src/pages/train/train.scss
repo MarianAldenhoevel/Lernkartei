@@ -84,5 +84,13 @@ page-train {
         animation-timing-function: $slide-animation-timing-function
     }
 
+    $card-font-scale: 120%;
 
+    .card-content {
+        font-size: $card-font-scale;
+    }
+
+    .card-content h2 {
+        font-size: $card-font-scale;
+    }
 }

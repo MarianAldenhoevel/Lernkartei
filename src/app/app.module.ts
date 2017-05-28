@@ -29,6 +29,7 @@ import { AboutPage } from '../pages/about/about';
 import { SessionProvider } from '../providers/session';
 import { LoadingProvider } from '../providers/loading';
 import { DBProvider } from '../providers/db';
+import { ConfirmProvider } from '../providers/confirm';
 import { ToolsProvider } from '../providers/tools';
 
 @NgModule({
@@ -75,6 +76,7 @@ import { ToolsProvider } from '../providers/tools';
         SessionProvider,
         LoadingProvider,
         DBProvider,
+        ConfirmProvider,
         ToolsProvider,
         SQLite,
         FileChooser,

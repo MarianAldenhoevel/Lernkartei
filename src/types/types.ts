@@ -26,6 +26,7 @@ export interface StackImport {
 export interface Session {
     "started": Date,
     "finished": Date,
+    "stack_size": number,
     "cards_known": number,
     "cards_unknown": number
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
-import { ModalController, NavParams, NavController, AlertController } from 'ionic-angular';
+import { ModalController, NavParams, NavController } from 'ionic-angular';
 
 import { Style } from "../../types/types";
 
@@ -11,6 +11,7 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 import { AboutPage } from '../about/about';
 
 import { SessionProvider } from '../../providers/session';
+import { ConfirmProvider } from '../../providers/confirm';
 import { DBProvider } from '../../providers/db';
 
 @Component({
@@ -24,51 +25,33 @@ export class SettingsPage {
         public navCtrl: NavController,
         public navParams: NavParams,
         public modalCtrl: ModalController,
-        private alertCtrl: AlertController,
+        private confirm: ConfirmProvider,
         public session: SessionProvider,
         public translate: TranslateService,
         private db: DBProvider) {
     }
 
     aboutClick(event): void {
-        console.log("SettingsPage.aboutClick()");
+        // console.log("SettingsPage.aboutClick()");
 
         this.navCtrl.push(AboutPage);
     }
 
     dropDbClick(event): void {
-        console.log("SettingsPage.dropDbClick()");
+        // console.log("SettingsPage.dropDbClick()");
 
-        let confirm = this.alertCtrl.create({
-            "title": this.translate.instant("CONFIRM"),
-            "message": this.translate.instant("CONFIRM_DROP_DB"),
-            "buttons": [
-                {
-                    text: this.translate.instant("NO"),
-                    role: 'cancel',
-                    handler: () => {
-                        console.log("SettingsPage.dropDbClick() - cancelled");    
-                    }
-                },
-                {
-                    text: this.translate.instant("YES"),
-                    handler: () => {
-                        console.log("SettingsPage.dropDbClick() - confirmed");
-
-                        this.db.dropDB().then(() => {
-                            console.log("SettingsPage.dropDbClick() - exiting");
-                            this.platform.exitApp();
-                        })
-                    }
-                }
-            ]
+        this.confirm.yesNo(this.translate.instant("CONFIRM_DROP_DB")).then(confirmed => {
+            if (confirmed) {
+                this.db.dropDB().then(() => {
+                    // console.log("SettingsPage.dropDbClick() - exiting");
+                    this.platform.exitApp();
+                })
+            }
         });
-
-        confirm.present();
     }
 
     pickStyle(styleParams: any, dismissHandler: (style: Style) => void) {
-        console.log("SettingsPage.pickStyle()");
+        // console.log("SettingsPage.pickStyle()");
 
         let modal = this.modalCtrl.create(StyleModal, styleParams);
         modal.onDidDismiss(data => {
@@ -81,32 +64,32 @@ export class SettingsPage {
     }
 
     cardPresentationModeChange(event): void {
-        console.log("SettingsPage.cardPresentationModeChange()");
+        // console.log("SettingsPage.cardPresentationModeChange()");
 
         this.session.settings.cardPresentationMode = parseInt(event);
     }
 
     numberOfBoxesChange(event): void {
-        console.log("SettingsPage.numberOfBoxesChange()");
+        // console.log("SettingsPage.numberOfBoxesChange()");
 
         this.session.settings.numberOfBoxes = parseInt(event);
         this.session.invalidateCurrentCardStack();
     }
 
     cardDowngradeModeChange(event): void {
-        console.log("SettingsPage.cardDowngradeModeChange()");
+        // console.log("SettingsPage.cardDowngradeModeChange()");
 
         this.session.settings.cardDowngradeMode = parseInt(event);
     }
 
     animateCardClick(event): void {
-        console.log("SettingsPage.animateCardClick()");
+        // console.log("SettingsPage.animateCardClick()");
 
         this.session.settings.animateCard = !this.session.settings.animateCard;
     }
 
     backgroundStyleClick(event): void {
-        console.log("SettingsPage.backgroundStyleClick()");
+        // console.log("SettingsPage.backgroundStyleClick()");
 
         this.pickStyle({
             "title": "BACKGROUND_STYLE",
@@ -122,7 +105,7 @@ export class SettingsPage {
     }
 
     cardFrontStyleClick(event): void {
-        console.log("SettingsPage.cardFrontStyleClick()");
+        // console.log("SettingsPage.cardFrontStyleClick()");
 
         this.pickStyle({
             "title": "CARD_FRONT_STYLE",
@@ -135,7 +118,7 @@ export class SettingsPage {
     }
 
     cardBackStyleClick(event): void {
-        console.log("SettingsPage.cardBackStyleClick()");
+        // console.log("SettingsPage.cardBackStyleClick()");
 
         this.pickStyle({
             "title": "CARD_BACK_STYLE",
@@ -148,7 +131,7 @@ export class SettingsPage {
     }
 
     ionViewWillLeave(): void {
-        console.log("SettingsPage.ionViewWillLeave()");
+        // console.log("SettingsPage.ionViewWillLeave()");
 
         this.session.saveSettingsObject();
     }

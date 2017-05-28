@@ -49,6 +49,7 @@ export class SessionProvider {
     public currentSession: Session = {
         "started": null,
         "finished": null,
+        "stack_size": 0,
         "cards_known": 0,
         "cards_unknown": 0
     }
@@ -201,6 +202,23 @@ export class SessionProvider {
         return msg;
     }
 
+    resetDeck(deck: Deck) {
+        // console.log("SessionProvider.resetDeck(\"" + deck.name + "\")");
+
+        this.db.resetDeck(deck);
+        this.invalidateCurrentCardStack();
+    }
+
+    renameDeck(deck: Deck, name: string) {
+        // console.log("SessionProvider.renameDeck(\"" + deck.name + "\",\"" + name + "\)");
+
+        if (deck.name != name) {
+            deck.name = name;
+            this.db.updateDeck(deck);
+            this.invalidateCurrentCardStack();
+        }
+    }
+
     toggleDeck(deck: Deck) {
         // console.log("SessionProvider.toggleDeck(\"" + deck.name + "\")");
 
@@ -221,6 +239,7 @@ export class SessionProvider {
     startSession() {
         // console.log("SessionProvider.startSession()");
 
+        this.currentSession.stack_size = this.countCards();
         this.currentSession.started = new Date();
         this.currentSession.finished = null;
         this.currentSession.cards_known = 0;
@@ -274,6 +293,22 @@ export class SessionProvider {
             // No card found at all.
             return null;
         });
+    }
+
+    countCards(): number {
+        // console.log("SessionProvider.countCards()");
+
+        let result = 0;
+
+        if (this.currentCardStackInBoxes) {
+            for (let box: number = 0; box < this.currentCardStackInBoxes.length; box++) {
+                result = result
+                    + this.currentCardStackInBoxes[box].unpresented.length
+                    + this.currentCardStackInBoxes[box].presented.length;
+            }
+        }
+
+        return result;
     }
 
     hasCards(): boolean {
@@ -354,7 +389,7 @@ export class SessionProvider {
 
     importDeck(uri: string): Promise<any> {
         return this.db.openDeckFromUri(uri)
-            .then(content => this.db.importDeck(content))
+            .then(deckinfo => this.db.importDeck(deckinfo))
             .then(() => {
                 this.filteredDecks = null;
                 this.allDecks = null;

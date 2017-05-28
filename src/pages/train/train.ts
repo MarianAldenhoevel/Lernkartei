@@ -20,8 +20,7 @@ export class TrainPage {
     public flipped: boolean = false;
     public animationClass: string = "";
     public animationTimeoutID: number = 0;
-    public sessionDuration: string = "";
-
+    
     @ViewChild("trainingStats") trainingStats;
 
     constructor(
@@ -132,8 +131,7 @@ export class TrainPage {
             this.session.startSession();
         }
         this.session.currentSession.finished = new Date();
-        this.sessionDuration = this.translate.instant("FOR_PRE") + this.tools.intervalToStr(new Date(this.session.currentSession.started), new Date(this.session.currentSession.finished)) + this.translate.instant("FOR_POST");
-
+        
         // Are we currently animating a slide out to either
         // side?
         if (this.animationClass == "slidingOutLeft" || this.animationClass == "slidingOutRight") {
@@ -257,7 +255,7 @@ export class TrainPage {
             let ms = this.session.currentSession.finished.getTime() - this.session.currentSession.started.getTime();
             if (ms / (1000 * 60) > 1) {
                 this.session.saveSession();
-                this.sessionDuration = "";
+                this.session.invalidateCurrentCardStack();
             }
         }
     }

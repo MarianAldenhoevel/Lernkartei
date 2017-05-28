@@ -44,20 +44,20 @@
     <ion-toolbar>
         <ion-grid *ngIf="currentCard">
             <ion-row>
-                <ion-col text-left>
-                    <button ion-button (tap)="dontKnowClick($event)" icon-left clear small color="danger">
+                <ion-col class="btnTraining">
+                    <button ion-button (tap)="dontKnowClick($event)" icon-left full default outline color="danger">
                         <ion-icon name="thumbs-down"></ion-icon>                        
                         {{ "DONTKNOW" | translate }}                        
                     </button>
                 </ion-col>
-                <ion-col center>
-                    <button ion-button (tap)="flipClick($event)" icon-left clear small color="dark">
+                <ion-col class="btnTraining">
+                    <button class="btnTraining" ion-button (tap)="flipClick($event)" icon-left full default outline color="dark">
                         <ion-icon name="sync"></ion-icon>
                         {{ "FLIP" | translate }}
                     </button>
                 </ion-col>
-                <ion-col text-right>
-                    <button ion-button (tap)="knowClick($event)" icon-right clear small color="secondary">
+                <ion-col class="btnTraining">
+                    <button class="btnTraining" ion-button (tap)="knowClick($event)" icon-right full default outline color="secondary">
                         {{ "KNOW" | translate }}
                         <ion-icon name="thumbs-up"></ion-icon>                       
                     </button>

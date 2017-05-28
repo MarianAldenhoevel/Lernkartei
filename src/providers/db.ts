@@ -153,16 +153,22 @@ export class DBProvider {
     // Open a deck from an URI to import it. Promise that resolves to an object including
     // meta-data for the stack and the data from the file to be parsed by importDeck().
     openDeckFromUri(uri: string): Promise<StackImport> {
-        // console.log("DBProvider.readWebFile(\"" + url + "\")");
+        console.log("DBProvider.openDeckFromUri(\"" + uri + "\")");
 
         return new Promise<any>(resolve => {
             jQuery.ajax({
                 "url": uri,
                 "dataType": "text"
             }).done((data) => {
-                // console.log("DBProvider.readWebFile(\"" + url + "\") - read success (" + data.length + " characters).");
+                // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - read success (" + data.length + " characters).");
 
-                let basename: string = uri.split("/").pop().split("#")[0].split("?")[0];
+                let components = decodeURIComponent(uri).split("/");
+                // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - components=[" + components.length + "]");
+
+                let pop = components.pop();
+                // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - pop=\"" + pop + "\"");
+
+                let basename: string = decodeURIComponent(uri).split("/").pop().split("#")[0].split("?")[0];
                 let i: number = basename.lastIndexOf(".");
                 if (i !== -1) {
                     basename = basename.substring(0, i);
@@ -188,17 +194,23 @@ export class DBProvider {
             }).then(() => {
                 var inserts = [];
 
-                // TODO: Find out what format the data is in and parse/interpret accordingly.
-                // Assume the data is in form of a JSON-encoded array.
-                let data = JSON.parse(deckinfo.data);
-                for (let i: number = 0; i < data.length; i++) {
-                    var card = data[i];
-                    if (!card.id) {
-                        card.id = new Md5().start().appendStr(card.front).appendStr(card.back).end(false);
-                    };
+                try {
+                    // Is this JSON data?
+                    let data = JSON.parse(deckinfo.data);
 
-                    inserts.push(this.runINSERT("INSERT INTO CARDS (id, front, back) VALUES (?,?,?)", [card.id, card.front, card.back]));
-                    inserts.push(this.runINSERT("INSERT INTO DECK_CARDS (deck_id, card_id) VALUES (?,?)", [deckId, card.id]));
+                    // Yes, should be an array. Now iterate over the cards.
+                    for (let i: number = 0; i < data.length; i++) {
+                        var card = data[i];
+                        if (!card.id) {
+                            card.id = new Md5().start().appendStr(card.front).appendStr(card.back).end(false);
+                        };
+
+                        inserts.push(this.runINSERT("INSERT OR REPLACE INTO CARDS (id, front, back) VALUES (?,?,?)", [card.id, card.front, card.back]));
+                        inserts.push(this.runINSERT("INSERT OR REPLACE INTO DECK_CARDS (deck_id, card_id) VALUES (?,?)", [deckId, card.id]));
+                    }
+                } catch (e) {
+                    // propably not JSON.
+                    throw e;
                 }
 
                 return Promise.all(inserts);
@@ -213,20 +225,20 @@ export class DBProvider {
             .then(() => { return this.runDDL("CREATE TABLE IF NOT EXISTS CARDS (id TEXT PRIMARY KEY, front TEXT, back TEXT, current_box INTEGER)"); })
             .then(() => { return this.runDDL("CREATE TABLE IF NOT EXISTS DECK_CARDS (deck_id INTEGER, card_id TEXT, CONSTRAINT unq_deck_card UNIQUE (deck_id, card_id))"); })
             .then(() => { return this.runDDL("CREATE TABLE IF NOT EXISTS SETTINGS (name TEXT PRIMARY KEY, value TEXT)"); })
-            .then(() => { return this.runDDL("CREATE TABLE IF NOT EXISTS SESSIONS (started DATETIME PRIMARY KEY, finished DATETIME, cards_known INTEGER, cards_unknown INTEGER)"); })
+            .then(() => { return this.runDDL("CREATE TABLE IF NOT EXISTS SESSIONS (started DATETIME PRIMARY KEY, finished DATETIME, stack_size INTEGER, cards_known INTEGER, cards_unknown INTEGER)"); })
 
             .then(() => { return this.runDDL("CREATE INDEX IF NOT EXISTS IX_SESSIONS_finished ON SESSIONS (finished)"); })
 
             /*
             .then(() => { return this.openDeckFromUri("assets/decks/Einmaleins.json"); })
-            .then((content) => { return this.importDeck(content); })
+            .then(deckinfo => { return this.importDeck(deckinfo); })
             */
 
             .then(() => { return this.openDeckFromUri("assets/decks/Zehn Testkarten.json"); })
-            .then((content) => { return this.importDeck(content); })
+            .then(deckinfo => { return this.importDeck(deckinfo); })
 
             .then(() => { return this.openDeckFromUri("assets/decks/Hauptstädte der Welt.json"); })
-            .then((content) => { return this.importDeck(content); });
+            .then(deckinfo => { return this.importDeck(deckinfo); });
 
     }
 
@@ -363,6 +375,21 @@ export class DBProvider {
         return this.runDML("UPDATE DECKS SET name = ?, active = ? WHERE (id = ?)", [deck.name, deck.active ? 1 : 0, deck.id]);
     }
 
+    resetDeck(deck: Deck): Promise<number> {
+        // console.log("DBProvider.resetDeck(\"" + deck.name + "\")");
+
+        return this.runDML(
+            "UPDATE CARDS " +
+            "  SET current_box = NULL " +
+            "WHERE id IN ( " +
+            "  SELECT id " +
+            "  FROM CARDS c " +
+            "  LEFT OUTER JOIN DECK_CARDS dc " +
+            "    ON (dc.card_id = c.id) " +
+            "  WHERE (dc.deck_id = ?) " +
+            "  )", [deck.id]);
+    }
+
     deleteDeck(deck: Deck): Promise<number> {
         // console.log("DBProvider.deleteDeck(\"" + deck.name + "\")");
 
@@ -390,10 +417,11 @@ export class DBProvider {
     updateSession(session: Session) {
         // console.log("DBProvider.updateSession(\"" + session.started + "\")");
 
-        return this.runDML("INSERT OR REPLACE INTO SESSIONS (started, finished, cards_known, cards_unknown) VALUES (?, ?, ?, ?)",
+        return this.runDML("INSERT OR REPLACE INTO SESSIONS (started, finished, stack_size, cards_known, cards_unknown) VALUES (?, ?, ?, ?, ?)",
             [
                 session.started ? session.started.getTime() : null,
                 session.finished ? session.finished.getTime() : null,
+                session.stack_size,
                 session.cards_known,
                 session.cards_unknown
             ]
