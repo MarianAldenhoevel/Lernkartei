@@ -233,8 +233,7 @@ export class TrainPage {
         this.db.openDB().then(() => {
 
             this.loading.dismiss();
-
-
+            
             if (!this.session.currentSession.started) {
                 this.session.startSession();
             }

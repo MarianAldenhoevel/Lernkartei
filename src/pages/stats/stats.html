@@ -10,8 +10,8 @@
     <ion-card *ngFor="let session of sessions">
         <ion-card-header>
             <h2>{{session.ago}}</h2>
-            <p>{{session.duration}}</p>
-            <p>{{session.stack_size}} <span *ngIf="(session.cards_known == 1)">{{ "CARD" | translate }}</span><span *ngIf="(session.cards_known != 1)">{{ "CARDS" | translate }}</span>&nbsp;{{ "IN_STACK" | translate }}</p>
+            <p>{{session.duration}},<br/>
+            {{session.stack_size}} <span *ngIf="(session.stack_size == 1)">{{ "CARD" | translate }}</span><span *ngIf="(session.stack_size != 1)">{{ "CARDS" | translate }}</span>&nbsp;{{ "IN_STACK" | translate }}</p>
         </ion-card-header>
 
         <ion-card-content>

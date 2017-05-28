@@ -34,6 +34,7 @@ export interface Session {
 export interface SessionInfo {
     "ago": string,
     "duration": string,
+    "stack_size": number,
     "cards_known": number,
     "cards_unknown": number
 }

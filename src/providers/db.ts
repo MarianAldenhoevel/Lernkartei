@@ -162,12 +162,6 @@ export class DBProvider {
             }).done((data) => {
                 // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - read success (" + data.length + " characters).");
 
-                let components = decodeURIComponent(uri).split("/");
-                // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - components=[" + components.length + "]");
-
-                let pop = components.pop();
-                // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - pop=\"" + pop + "\"");
-
                 let basename: string = decodeURIComponent(uri).split("/").pop().split("#")[0].split("?")[0];
                 let i: number = basename.lastIndexOf(".");
                 if (i !== -1) {

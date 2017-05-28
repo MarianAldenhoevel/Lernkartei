@@ -167,6 +167,8 @@ export class SessionProvider {
                         this.currentCardStackInBoxes[box] = { presented: [], unpresented: [] };
                     }
 
+                    this.currentSession.stack_size = currentCardStack.length;
+                    
                     for (var card of currentCardStack) {
                         // Clamp value of the current box between 0 and the high box index                        
                         if (!card.current_box) {
@@ -181,7 +183,7 @@ export class SessionProvider {
 
                     // console.log("SessionProvider.getCurrentCardStack() - boxes: " + this.logStack(this.currentCardStackInBoxes));
 
-                    this.startingBox = this.lowestBoxWithUnpresentedCards();
+                    this.startingBox = this.lowestBoxWithUnpresentedCards();                    
 
                     resolve(this.currentCardStackInBoxes);
                 })
@@ -239,7 +241,6 @@ export class SessionProvider {
     startSession() {
         // console.log("SessionProvider.startSession()");
 
-        this.currentSession.stack_size = this.countCards();
         this.currentSession.started = new Date();
         this.currentSession.finished = null;
         this.currentSession.cards_known = 0;
@@ -248,7 +249,6 @@ export class SessionProvider {
 
     saveSession() {
         // console.log("SessionProvider.saveSession()");
-
         this.db.updateSession(this.currentSession).then(() => { this.currentSession.started = null; });
     }
 
@@ -259,12 +259,10 @@ export class SessionProvider {
             let result: Array<SessionInfo> = [];
 
             for (let i: number = 0; i < sessionrows.length; i++) {
-
-                // console.log(JSON.stringify(sessionrows[i], null, 4));
-
                 result.push({
                     "ago": this.translate.instant("AGO_PRE") + this.tools.intervalToStr(new Date(sessionrows[i].started), new Date()) + this.translate.instant("AGO_POST"),
                     "duration": this.translate.instant("FOR_PRE") + this.tools.intervalToStr(new Date(sessionrows[i].started), new Date(sessionrows[i].finished)) + this.translate.instant("FOR_POST"),
+                    "stack_size": sessionrows[i].stack_size,
                     "cards_known": sessionrows[i].cards_known,
                     "cards_unknown": sessionrows[i].cards_unknown
                 });
