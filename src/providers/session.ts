@@ -158,7 +158,7 @@ export class SessionProvider {
         } else {
             // Load stack of all cards in all decks filtered AND active
             return new Promise(resolve => {
-                // console.log("SessionProvider.getCurrentCardStack() - load");
+                console.log("SessionProvider.getCurrentCardStack() - load");
 
                 this.db.loadCurrentCardStack(this.deckFilter).then(currentCardStack => {
                     // We want the cards to be sorted into boxes.
@@ -225,8 +225,10 @@ export class SessionProvider {
         // console.log("SessionProvider.toggleDeck(\"" + deck.name + "\")");
 
         deck.active = !deck.active;
-        this.db.updateDeck(deck);
-        this.invalidateCurrentCardStack();
+        
+        this.db.updateDeck(deck).then(() => {
+            this.invalidateCurrentCardStack();
+        })
     }
 
     deleteDeck(deck: Deck) {

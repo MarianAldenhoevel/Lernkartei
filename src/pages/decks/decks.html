@@ -14,7 +14,7 @@
             <h2>{{ "IMPORT_DECK_FROM_FILE" | translate }}</h2>
         </ion-item>
         <ion-item *ngFor="let deck of decks">
-            <ion-checkbox item-left [checked]="deck.active" (tap)="toggleDeck($event,deck)"></ion-checkbox>
+            <ion-checkbox item-left [checked]="deck.active" (click)="toggleDeck($event,deck)"></ion-checkbox>
             <ion-label>
                 <h2>{{deck.name}}</h2>
                 <p>{{deck.card_count}} {{ "CARDS" | translate }}</p>
