@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 
 import { Device } from "@ionic-native/device";
 import { SQLite } from "@ionic-native/sqlite";
+import { FilePath } from '@ionic-native/file-path';
 
 import * as jQuery from "jquery";
 
@@ -14,7 +15,10 @@ export class DBProvider {
 
     private db = null;
 
-    constructor(private device: Device, private sqlite: SQLite) {
+    constructor(
+        private device: Device,
+        private filepath: FilePath,
+        private sqlite: SQLite) {
         // console.log("DBProvider.constructor()");
     }
 
@@ -153,24 +157,48 @@ export class DBProvider {
     // Open a deck from an URI to import it. Promise that resolves to an object including
     // meta-data for the stack and the data from the file to be parsed by importDeck().
     openDeckFromUri(uri: string): Promise<StackImport> {
-        console.log("DBProvider.openDeckFromUri(\"" + uri + "\")");
+        // console.log("DBProvider.openDeckFromUri(\"" + uri + "\")");
 
-        return new Promise<any>(resolve => {
+        return new Promise<StackImport>((resolve, reject) => {
             jQuery.ajax({
                 "url": uri,
                 "dataType": "text"
-            }).done((data) => {
+            }).done(data => {
                 // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - read success (" + data.length + " characters).");
+                resolve({ "name": uri, "data": data });
+            })
+        }).then(deckinfo => {
+            // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - resolve name?");
+                
+            if ((uri.startsWith("content://")) && this.device.cordova && (this.device.platform === "Android")) {
+                // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - yes.");
+                
+                return new Promise<StackImport>((resolve, reject) => { 
+                    this.filepath.resolveNativePath(uri).then(path => {
+                        // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - native path = \"" + path + "\"");
+                        deckinfo.name = path;
+                        resolve(deckinfo);
+                    })
+                })
+            } else {
+                // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - no.");
 
-                let basename: string = decodeURIComponent(uri).split("/").pop().split("#")[0].split("?")[0];
-                let i: number = basename.lastIndexOf(".");
-                if (i !== -1) {
-                    basename = basename.substring(0, i);
-                }
+                return deckinfo;
+            }
+        }).then(deckinfo => {
+            // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - find basename.");
+            
+            let basename: string = decodeURIComponent(deckinfo.name).split("/").pop().split("#")[0].split("?")[0];
+            let i: number = basename.lastIndexOf(".");
+            if (i !== -1) {
+                basename = basename.substring(0, i);
+            }
 
-                resolve({ "name": basename, "data": data });
-            });
-        });
+            // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - basename = \"" + basename + "\"");
+            
+            deckinfo.name = basename;
+            return deckinfo;
+        })
     }
 
     // Import a deck by creating or updating a record in the DECKS table, the CARDS records

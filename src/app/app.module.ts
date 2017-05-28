@@ -12,6 +12,7 @@ import { Device } from '@ionic-native/device';
 import { AppVersion } from '@ionic-native/app-version';
 import { SQLite } from '@ionic-native/sqlite';
 import { FileChooser } from '@ionic-native/file-chooser';
+import { FilePath } from '@ionic-native/file-path';
 
 // import { ColorPicker } from '../components/color-picker-palette/color-picker-palette';
 import { ColorPicker } from '../components/color-picker-sliders/color-picker-sliders';
@@ -80,6 +81,7 @@ import { ToolsProvider } from '../providers/tools';
         ToolsProvider,
         SQLite,
         FileChooser,
+        FilePath,
         { provide: ErrorHandler, useClass: IonicErrorHandler }
     ]
 })
