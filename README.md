@@ -8,6 +8,35 @@ This idea is not new a all of course. I looked at over a dozen flash-card apps o
 
 For any self-respecting software person this is a prompt to roll their own. Let's see wether I can do better.
 
+## Import of card decks
+
+The app can import data from local files. To do so on android it uses the cordova file-chooser plugin which integrates with the system and provides a native file selector. This allows seamless import from things like dropbox as well.
+
+There are three basic formats currently supported: JSON, CSV and Excel (xlsx).
+
+### JSON
+
+The JSON format understood by this app is an array of objects, each having a front and back property. There is an optional id property if you want to identify cards yourself, if the id is missing it is automatically created from the front and back contents of the card by hashing.
+
+Example:
+
+```javascript
+[
+  { "front": "six times seven", "back": "42" },
+  { "front": "two times two", "back": "4" }
+]
+```
+### CSV
+
+The CSV-import is implemented by [Papa Parse](http://papaparse.com/), see their page for detailled information on the options. Generally you will want to write a two-column CSV file with the front-content in column 1 and the back-content in column 2. If you want to include headers call them "front" and "back" and they will be skipped when importing data.
+
+    "Front of first card", "back of first card"
+    "Another card", "back of another card
+    
+### Excel XLSX
+
+Spreadsheet-import is implemented by [js-xlxls](https://github.com/SheetJS/js-xlsx), see their page for details. Generally you will want to have two columns in your spreadsheet, the first one with the front-content of the cards, the second one with the backs.
+
 ## Collection of Ideas
 
 This is a grab-bag of things that may make up a specification if worked on. This is a fun-project so there propably won't be such a thing but the list is here to reference if something becomes muddled.
