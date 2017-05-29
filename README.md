@@ -35,7 +35,7 @@ The CSV-import is implemented by [Papa Parse](http://papaparse.com/), see their 
     
 ### Excel XLSX
 
-Spreadsheet-import is implemented by [js-xlxls](https://github.com/SheetJS/js-xlsx), see their page for details. Generally you will want to have two columns in your spreadsheet, the first one with the front-content of the cards, the second one with the backs.
+Spreadsheet-import is implemented by [js-xlxls](https://github.com/SheetJS/js-xlsx), see their page for details. Generally you will want to have two columns on the first workbook in your spreadsheet, the first one with the front-content of the cards, the second one with the backs.
 
 ## Collection of Ideas
 
