@@ -101,7 +101,7 @@ export class TrainPage {
                             {
                                 text: this.translate.instant("OK"),
                                 handler: () => {
-                                    console.log("TrainPage.nextCard() - No cards OK");
+                                    // console.log("TrainPage.nextCard() - No cards OK");
                                 }
                             }
                         ]

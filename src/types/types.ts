@@ -20,7 +20,8 @@ export interface Box {
 
 export interface StackImport {
     "name": string,
-    "data": any
+    "dataUint8Array": Uint8Array,
+    "dataString": string
 }
 
 export interface Session {

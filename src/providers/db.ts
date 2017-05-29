@@ -4,8 +4,9 @@ import { Device } from "@ionic-native/device";
 import { SQLite } from "@ionic-native/sqlite";
 import { FilePath } from '@ionic-native/file-path';
 
-import * as jQuery from "jquery";
 import * as Papa from "papaparse";
+import * as XLSX from "xlsx";
+import * as encoding from "text-encoding";
 
 import { Md5 } from "ts-md5/dist/md5";
 
@@ -161,13 +162,21 @@ export class DBProvider {
         // console.log("DBProvider.openDeckFromUri(\"" + uri + "\")");
 
         return new Promise<StackImport>((resolve, reject) => {
-            jQuery.ajax({
-                "url": uri,
-                "dataType": "text"
-            }).done(data => {
-                // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - read success (" + data.length + " characters).");
-                resolve({ "name": uri, "data": data });
-            })
+            let self: DBProvider = this;
+            let xhr: XMLHttpRequest = new XMLHttpRequest();
+            xhr.responseType = "arraybuffer";
+            xhr.addEventListener("load", function () {
+                if (xhr.status == 200) {
+                    let arr: Uint8Array = new Uint8Array(xhr.response);                
+                    let str: string = new encoding.TextDecoder("utf-8").decode(arr);
+
+                    // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - read success (" + arr.length + " characters).");
+                    resolve({ "name": uri, "dataUint8Array": arr, "dataString": str });
+                }
+            });
+
+            xhr.open("GET", uri + "?bust=" + new Date().getTime());
+            xhr.send(null);
         }).then(deckinfo => {
             // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - resolve name?");
 
@@ -205,7 +214,7 @@ export class DBProvider {
     // Import a deck by creating or updating a record in the DECKS table, the CARDS records
     // and the required DECKCARDS records. 
     importDeck(deckinfo: StackImport): Promise<void> {
-        // console.log("DBProvider.importDeck()");
+        // console.log("DBProvider.importDeck(\"" + deckinfo.name + "\")");
 
         let deckId: number;
 
@@ -213,17 +222,30 @@ export class DBProvider {
             .then(() => this.runSELECT("SELECT id FROM DECKS WHERE name=?", [deckinfo.name]))
             .then((data: Array<any>) => {
                 deckId = data[0].id;
-                // console.log("Deck inserted with id " + deckId.toString());            
+                // console.log("DBProvider.importDeck(\"" + deckinfo.name + "\") - Deck inserted with id " + deckId.toString());            
             }).then(() => {
                 return new Promise<Array<any>>((resolve, reject) => {
                     try {
                         // Is this JSON data?
-                        let data = JSON.parse(deckinfo.data);
+                        // console.log("DBProvider.importDeck(\"" + deckinfo.name + "\") - try JSON");
+
+                        let data = JSON.parse(deckinfo.dataString);
                         resolve(data);
                     } catch (e) {
                         // propably not JSON. How about CSV?
                         try {
-                            let parsed = Papa.parse(deckinfo.data);
+                            // Papaparse tries to be really nice and parses some
+                            // ZIP-files as CSV depending on binary content.
+                            // We don't want that, so we check for the ZIP-header
+                            // ourselves.
+                            if (deckinfo.dataString.startsWith("PK")) {
+                                // console.log("DBProvider.importDeck(\"" + deckinfo.name + "\") - propably ZIP, skip CSV");
+                                throw "propably ZIP, skip CSV";
+                            }
+
+                            console.log("DBProvider.importDeck(\"" + deckinfo.name + "\") - try CSV");
+
+                            let parsed = Papa.parse(deckinfo.dataString);
                             if (parsed.errors && parsed.errors.length) {
                                 throw parsed.errors;
                             }
@@ -234,8 +256,25 @@ export class DBProvider {
                             };
                             resolve(cardarr);
                         } catch (e) {
-                            // Nope, not Papa-parseable CSV either.
-                            reject(e);
+                            // Nope, not Papa-parseable CSV either. Excel?
+                            try {
+                                // console.log("DBProvider.importDeck(\"" + deckinfo.name + "\") - try XLSX");
+
+                                let arr = new Array();
+                                for (let i = 0; i != deckinfo.dataUint8Array.length; ++i) {
+                                    arr[i] = String.fromCharCode(deckinfo.dataUint8Array[i]);
+                                };
+                                var bstr = arr.join("");
+
+                                var workbook = XLSX.read(bstr, { "type": "binary" });
+                                var worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                                let parsed = XLSX.utils.sheet_to_json(worksheet, { "header": ["front", "back"] });
+
+                                resolve(parsed);
+                            } catch (e) {
+                                // Not even Excel!
+                                reject(e);
+                            }
                         }
                     }
                 })
@@ -245,12 +284,17 @@ export class DBProvider {
 
                 for (let i: number = 0; i < cardarr.length; i++) {
                     var card = cardarr[i];
-                    if (!card.id) {
-                        card.id = new Md5().start().appendStr(card.front).appendStr(card.back).end(false);
-                    };
+                    // Skip a card that just says "front" on the front and "back" on the back
+                    // on the assumption that it propably is an artifact from importing
+                    // headers :-).
+                    if ((card.front.toLowerCase() != "front") || (card.back.toLowerCase() != "back")) {
+                        if (!card.id) {
+                            card.id = new Md5().start().appendStr(card.front).appendStr(card.back).end(false);
+                        };
 
-                    inserts.push(this.runINSERT("INSERT OR REPLACE INTO CARDS (id, front, back) VALUES (?,?,?)", [card.id, card.front, card.back]));
-                    inserts.push(this.runINSERT("INSERT OR REPLACE INTO DECK_CARDS (deck_id, card_id) VALUES (?,?)", [deckId, card.id]));
+                        inserts.push(this.runINSERT("INSERT OR REPLACE INTO CARDS (id, front, back) VALUES (?,?,?)", [card.id, card.front, card.back]));
+                        inserts.push(this.runINSERT("INSERT OR REPLACE INTO DECK_CARDS (deck_id, card_id) VALUES (?,?)", [deckId, card.id]));
+                    }
                 }
 
                 return Promise.all(inserts);
@@ -279,8 +323,13 @@ export class DBProvider {
             .then(deckinfo => { return this.importDeck(deckinfo); })
             */
 
+            /*
             .then(() => { return this.openDeckFromUri("assets/decks/Zehn Testkarten.csv"); })
             .then(deckinfo => { return this.importDeck(deckinfo); })
+            
+            .then(() => { return this.openDeckFromUri("assets/decks/Excel.xlsx"); })
+            .then(deckinfo => { return this.importDeck(deckinfo); })
+            */
 
             .then(() => { return this.openDeckFromUri("assets/decks/Hauptstädte der Welt.json"); })
             .then(deckinfo => { return this.importDeck(deckinfo); });
