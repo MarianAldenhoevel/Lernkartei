@@ -27,6 +27,7 @@ export interface StackImport {
 export interface Session {
     "started": Date,
     "finished": Date,
+    "deckfilter": string,
     "stack_size": number,
     "cards_known": number,
     "cards_unknown": number
@@ -35,6 +36,7 @@ export interface Session {
 export interface SessionInfo {
     "ago": string,
     "duration": string,
+    "deckfilter": string,
     "stack_size": number,
     "cards_known": number,
     "cards_unknown": number

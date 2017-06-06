@@ -237,6 +237,7 @@ export class TrainPage {
             if (!this.session.currentSession.started) {
                 this.session.startSession();
             }
+            this.session.startingBox = this.session.lowestBoxWithUnpresentedCards();
 
             this.nextCard();
 

@@ -11,6 +11,7 @@
         <ion-card-header>
             <h2>{{session.ago}}</h2>
             <p>{{session.duration}},<br/>
+            <p *ngIf="(session.deckfilter)">{{ "DECKFILTER" | translate }}&nbsp;{{session.deckfilter}},<br *ngIf="(session.deckfilter)" />
             {{session.stack_size}} <span *ngIf="(session.stack_size == 1)">{{ "CARD" | translate }}</span><span *ngIf="(session.stack_size != 1)">{{ "CARDS" | translate }}</span>&nbsp;{{ "IN_STACK" | translate }}</p>
         </ion-card-header>
 

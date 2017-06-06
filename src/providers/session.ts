@@ -44,11 +44,12 @@ export class SessionProvider {
     private filteredDecks: Array<Deck>;
 
     private currentCardStackInBoxes: Array<Box>;
-    private startingBox: number = null;
+    public startingBox: number = null;
 
     public currentSession: Session = {
         "started": null,
         "finished": null,
+        "deckfilter": "",
         "stack_size": 0,
         "cards_known": 0,
         "cards_unknown": 0
@@ -92,6 +93,7 @@ export class SessionProvider {
 
         if (deckFilter != this.deckFilter) {
             // Filter has changed, invalidate filtered set.
+            this.invalidateCurrentCardStack();
             this.deckFilter = deckFilter;
             this.filteredDecks = null;
         }
@@ -168,7 +170,7 @@ export class SessionProvider {
                     }
 
                     this.currentSession.stack_size = currentCardStack.length;
-                    
+
                     for (var card of currentCardStack) {
                         // Clamp value of the current box between 0 and the high box index                        
                         if (!card.current_box) {
@@ -183,7 +185,7 @@ export class SessionProvider {
 
                     // console.log("SessionProvider.getCurrentCardStack() - boxes: " + this.logStack(this.currentCardStackInBoxes));
 
-                    this.startingBox = this.lowestBoxWithUnpresentedCards();                    
+                    this.startingBox = this.lowestBoxWithUnpresentedCards();
 
                     resolve(this.currentCardStackInBoxes);
                 })
@@ -225,7 +227,7 @@ export class SessionProvider {
         // console.log("SessionProvider.toggleDeck(\"" + deck.name + "\")");
 
         deck.active = !deck.active;
-        
+
         this.db.updateDeck(deck).then(() => {
             this.invalidateCurrentCardStack();
         })
@@ -244,6 +246,7 @@ export class SessionProvider {
         // console.log("SessionProvider.startSession()");
 
         this.currentSession.started = new Date();
+        this.currentSession.deckfilter = this.deckFilter;
         this.currentSession.finished = null;
         this.currentSession.cards_known = 0;
         this.currentSession.cards_unknown = 0;
@@ -264,6 +267,7 @@ export class SessionProvider {
                 result.push({
                     "ago": this.translate.instant("AGO_PRE") + this.tools.intervalToStr(new Date(sessionrows[i].started), new Date()) + this.translate.instant("AGO_POST"),
                     "duration": this.translate.instant("FOR_PRE") + this.tools.intervalToStr(new Date(sessionrows[i].started), new Date(sessionrows[i].finished)) + this.translate.instant("FOR_POST"),
+                    "deckfilter": sessionrows[i].deckfilter,
                     "stack_size": sessionrows[i].stack_size,
                     "cards_known": sessionrows[i].cards_known,
                     "cards_unknown": sessionrows[i].cards_unknown
@@ -332,9 +336,11 @@ export class SessionProvider {
     // Return the index of the lowest box that has unpresented cards. 
     lowestBoxWithUnpresentedCards(): number {
         // console.log("SessionProvider.lowestBoxWithUnpresentedCards()");
-        for (let box: number = 0; box < this.currentCardStackInBoxes.length; box++) {
-            if (this.currentCardStackInBoxes[box].unpresented.length) {
-                return box;
+        if (this.currentCardStackInBoxes) {
+            for (let box: number = 0; box < this.currentCardStackInBoxes.length; box++) {
+                if (this.currentCardStackInBoxes[box].unpresented.length) {
+                    return box;
+                }
             }
         }
 

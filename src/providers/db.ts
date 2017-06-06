@@ -162,9 +162,14 @@ export class DBProvider {
         // console.log("DBProvider.openDeckFromUri(\"" + uri + "\")");
 
         return new Promise<StackImport>((resolve, reject) => {
-            let self: DBProvider = this;
             let xhr: XMLHttpRequest = new XMLHttpRequest();
-            xhr.responseType = "arraybuffer";
+            xhr.responseType = "arraybuffer";                                                                                                                                                                                                                                               
+            
+            xhr.addEventListener("error", function(evt) {
+                console.error(evt);
+                reject(evt);
+            });
+
             xhr.addEventListener("load", function () {
                 if (xhr.status == 200) {
                     let arr: Uint8Array = new Uint8Array(xhr.response);                
@@ -175,7 +180,7 @@ export class DBProvider {
                 }
             });
 
-            xhr.open("GET", uri + "?bust=" + new Date().getTime());
+            xhr.open("GET", uri);
             xhr.send(null);
         }).then(deckinfo => {
             // console.log("DBProvider.openDeckFromUri(\"" + uri + "\") - resolve name?");
@@ -218,7 +223,11 @@ export class DBProvider {
 
         let deckId: number;
 
-        return this.runDML("INSERT OR REPLACE INTO DECKS (name, active) VALUES (?,?)", [deckinfo.name, 1])
+
+        return this.runSELECT("SELECT id FROM DECKS WHERE name=?", [deckinfo.name])
+            .then((data: Array<any>) => { if (data.length) { return data[0].id; } else { return -1; } })
+            .then(deckid => this.runDML("DELETE FROM DECK_CARDS WHERE (deck_id = ?)", [deckid]))
+            .then(() => this.runDML("INSERT OR REPLACE INTO DECKS (name, active) VALUES (?,?)", [deckinfo.name, 1]))
             .then(() => this.runSELECT("SELECT id FROM DECKS WHERE name=?", [deckinfo.name]))
             .then((data: Array<any>) => {
                 deckId = data[0].id;
@@ -298,7 +307,7 @@ export class DBProvider {
                 }
 
                 return Promise.all(inserts);
-            }).then(() => { return; });
+            }).then(() => { return; } );
     }
 
     // Create the DB objects for a fresh DB and import the built-in default deck of cards.
@@ -309,7 +318,7 @@ export class DBProvider {
             .then(() => { return this.runDDL("CREATE TABLE IF NOT EXISTS CARDS (id TEXT PRIMARY KEY, front TEXT, back TEXT, current_box INTEGER)"); })
             .then(() => { return this.runDDL("CREATE TABLE IF NOT EXISTS DECK_CARDS (deck_id INTEGER, card_id TEXT, CONSTRAINT unq_deck_card UNIQUE (deck_id, card_id))"); })
             .then(() => { return this.runDDL("CREATE TABLE IF NOT EXISTS SETTINGS (name TEXT PRIMARY KEY, value TEXT)"); })
-            .then(() => { return this.runDDL("CREATE TABLE IF NOT EXISTS SESSIONS (started DATETIME PRIMARY KEY, finished DATETIME, stack_size INTEGER, cards_known INTEGER, cards_unknown INTEGER)"); })
+            .then(() => { return this.runDDL("CREATE TABLE IF NOT EXISTS SESSIONS (started DATETIME PRIMARY KEY, finished DATETIME, deckfilter STRING, stack_size INTEGER, cards_known INTEGER, cards_unknown INTEGER)"); })
 
             .then(() => { return this.runDDL("CREATE INDEX IF NOT EXISTS IX_SESSIONS_finished ON SESSIONS (finished)"); })
 
@@ -326,14 +335,21 @@ export class DBProvider {
             /*
             .then(() => { return this.openDeckFromUri("assets/decks/Zehn Testkarten.csv"); })
             .then(deckinfo => { return this.importDeck(deckinfo); })
-            
+            */
+
+            /*
             .then(() => { return this.openDeckFromUri("assets/decks/Excel.xlsx"); })
+            .then(deckinfo => { return this.importDeck(deckinfo); })
+            */
+
+            /*
+            .then(() => { return this.openDeckFromUri("assets/decks/G21 A4 Unit 3.json"); })
             .then(deckinfo => { return this.importDeck(deckinfo); })
             */
 
             .then(() => { return this.openDeckFromUri("assets/decks/Hauptstädte der Welt.json"); })
             .then(deckinfo => { return this.importDeck(deckinfo); });
-
+            
     }
 
     // Destroy all DB objects we know of.
@@ -451,7 +467,7 @@ export class DBProvider {
             "       AND (d.active) ";
         if (deckFilter) {
             q += "       AND (d.name LIKE ?)";
-            params.push(deckFilter);
+            params.push( "%" + deckFilter + "%" );
         }
 
         return this.runSELECT(q, params);
@@ -511,10 +527,11 @@ export class DBProvider {
     updateSession(session: Session) {
         // console.log("DBProvider.updateSession(\"" + session.started + "\")");
 
-        return this.runDML("INSERT OR REPLACE INTO SESSIONS (started, finished, stack_size, cards_known, cards_unknown) VALUES (?, ?, ?, ?, ?)",
+        return this.runDML("INSERT OR REPLACE INTO SESSIONS (started, finished, deckfilter, stack_size, cards_known, cards_unknown) VALUES (?, ?, ?, ?, ?, ?)",
             [
                 session.started ? session.started.getTime() : null,
                 session.finished ? session.finished.getTime() : null,
+                session.deckfilter,
                 session.stack_size,
                 session.cards_known,
                 session.cards_unknown
